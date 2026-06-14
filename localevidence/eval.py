@@ -36,6 +36,10 @@ def summarize(results: Sequence[dict]) -> dict:
     return {
         "n": len(gs),
         "mean_coverage": round(sum(g["coverage"] for g in gs) / n, 3),
+        # absolute grounded claims — guards against "100% grounded because it said
+        # almost nothing": coverage rewards terseness, this rewards substance.
+        "mean_grounded_claims": round(sum(g.get("n_grounded", 0) for g in gs) / n, 2),
+        "mean_claims": round(sum(g.get("n_sentences", 0) for g in gs) / n, 2),
         "mean_hallucinated": round(sum(g["hallucinated_citations"] for g in gs) / n, 3),
         "fully_grounded": sum(1 for g in gs if g["coverage"] >= 0.99),
         "any_hallucination": sum(1 for g in gs if g["hallucinated_citations"] > 0),
