@@ -1,23 +1,21 @@
 # LocalEvidence
 
-**Scaffolding that makes Claude Code a better clinical-evidence engine than it is
-on its own. Claude Code is the interface; this is the substrate — a local-first,
-*compounding* corpus with grounded retrieval and a memory of your past questions.**
+**Answer your own clinical questions from a library of papers you own, with every
+claim traceable to the source it came from.** LocalEvidence finds the relevant
+literature, acquires the full text, and assembles a grounded, cited evidence pack
+on your machine — and the library compounds as you use it.
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)
 
-The bet is simple: a capable agent already rivals closed tools like OpenEvidence
-on clinical questions, but on its own it has no persistent corpus, no memory of
-local conditions, and a habit of confident hallucination. LocalEvidence fills
-exactly those three gaps — a paper library you own, a ledger of worked answers,
-and passage-grounded retrieval — so the agent answers better, on your topics,
-and auditably. You drive it from Claude Code; everything stays on your machine.
-
-Concretely: it answers a clinical question by discovering the relevant literature,
-acquiring the full text it needs, indexing it at passage level, and assembling a
-grounded evidence pack that the agent (in the loop — no paid API) synthesises into
-a cited answer.
+Under the hood it's **scaffolding around a capable AI agent** (you drive it from
+Claude Code; the agent does the synthesis, no paid API). The bet: an agent already
+rivals closed tools like OpenEvidence on clinical questions, but on its own it has
+no persistent corpus, no memory of local conditions, and a habit of confident
+hallucination — which LocalEvidence counters by grounding every claim to a
+retrievable passage and recording an auditable provenance trail. It fills exactly
+those three gaps: a paper library you own, a ledger of worked answers, and
+passage-grounded retrieval. Everything stays on your machine.
 
 The point is not a clever one-shot retriever. It is that **the corpus compounds**:
 every paper a question pulls is kept, so the next related question is faster and
@@ -87,6 +85,7 @@ git clone https://github.com/<you>/localevidence.git
 cd localevidence
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
+pip install -e .                                     # optional: enables the bare `localevidence` command
 export LOCALEVIDENCE_EMAIL="your.name@example.org"   # YOUR real address — Unpaywall 422s the placeholder
 
 # Ask a question (open-access acquisition by default):
@@ -104,12 +103,12 @@ python3 -m localevidence guidelines --source rch
 # Serve the phone face (installable offline PWA) over your LAN / tailnet:
 python3 -m localevidence serve         # http://127.0.0.1:8765
 
-# Audit a worked answer: emit its full provenance trail + grounding check:
+# Audit a worked answer: emit its full provenance trail + citation-provenance check:
 python3 -m localevidence audit -e 24   # or --project <slug>, --json, --resolve
 ```
 
 Commands: `ask` (the engine), `answer` (write a synthesised answer into the
-ledger), `audit` (provenance + grounding trail), `pack` (export/harvest a
+ledger), `audit` (provenance + citation-provenance check), `pack` (export/harvest a
 shareable knowledge pack), `queue` (drain the phone queue), `load` (self-play a
 question bank), `guidelines` (harvest CPGs), `serve` (backend + PWA). `--help`
 on each.

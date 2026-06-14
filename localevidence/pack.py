@@ -6,7 +6,8 @@ You cannot legally redistribute a corpus of copyrighted PDFs. But three things
   1. the **paper list** — bibliographic metadata (DOI, title, authors, year,
      journal, evidence tier). Facts, not expression.
   2. **summaries** — *your own words* on what each paper provides (NOT the
-     abstract — a paraphrase you generate). Filled by `pack summarise`.
+     abstract — a paraphrase you generate). The exported slots start empty; you
+     fill them in your own words (a Claude-in-the-loop step; see docs/PACK.md).
   3. the **map** — how the papers fit together: topic clusters + a
      nearest-neighbour similarity graph, derived from embeddings (structure, not
      text; no verbatim passages or raw vectors are shipped).
@@ -121,7 +122,7 @@ def export_pack(out_dir: str | Path, *, index=None, k_clusters: Optional[int] = 
         for p in papers:
             fh.write(json.dumps(p, ensure_ascii=False) + "\n")
 
-    # --- 2. summaries (slots — own-words, filled by `pack summarise`) ----------
+    # --- 2. summaries (empty own-words slots — filled by hand; see docs/PACK.md) -
     with (out / "summaries.jsonl").open("w") as fh:
         for p in papers:
             fh.write(json.dumps({"slug": p["slug"], "title": p["title"],
@@ -158,7 +159,8 @@ def export_pack(out_dir: str | Path, *, index=None, k_clusters: Optional[int] = 
                "with_neighbours": len(links), "out": str(out)}
     if verbose:
         print(f"  pack: {summary['papers']} papers, {summary['clusters']} clusters "
-              f"-> {out}  (run `pack summarise` to fill the summaries)")
+              f"-> {out}  (summaries.jsonl slots are empty — fill them in your own "
+              f"words; see docs/PACK.md)")
     return summary
 
 

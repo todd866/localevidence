@@ -41,7 +41,7 @@ def test_export_pack_structure_and_shareable_boundary(tmp_path):
     assert m["n_papers"] == 6 and m["links"]
     assert "discusses clinical topic" not in json.dumps(m)   # no verbatim text in the map
 
-    # summaries: empty own-words slots to be filled by `pack summarise`
+    # summaries: empty own-words slots, filled in by hand (see docs/PACK.md)
     sums = [json.loads(l) for l in (out / "summaries.jsonl").read_text().splitlines() if l.strip()]
     assert len(sums) == 6 and all(s["provides"] == "" for s in sums)
     assert (out / "README.md").exists()

@@ -103,7 +103,8 @@ the graph maps are designed, not implemented.
 ### 3. Retrieval — ✅ hybrid · ⬜ rerank
 
 Hybrid: FTS5 BM25 (lexical) + MiniLM dense (semantic), fused by Reciprocal Rank
-Fusion, with reference/table chunk hygiene, a guideline/SR tier-guarantee scoped
+Fusion, with reference/grid chunk hygiene (drug-dosing tables are protected — kept
+even though they look numeric-dense), a guideline/SR tier-guarantee scoped
 to the current question's own papers, and a relevance-gated **local-guideline
 guarantee** (terse bedside guidelines lose the dense race to journal prose, so
 the most query-relevant one is guaranteed a seat above a floor). Next: a
@@ -258,7 +259,7 @@ acquisition method — ever enters git history.
 5. ✅ simulated-question loader + seed bank.
 6. ✅ guideline harvester (RCH worked example).
 7. ✅ serve + offline PWA.
-8. ✅ audit layer (provenance trail + citation grounding check + verification ceiling).
+8. ✅ audit layer (provenance trail + citation-provenance check + verification ceiling).
 8b. ✅ knowledge packs (`pack export`/`harvest`): the shareable list + summaries + map of a corpus, minus the copyrighted PDFs — corpus distributable as a public good (see `docs/PACK.md`).
 9. ⬜ citation + claim graphs (the graph maps — designed, not built).
 10. ⬜ CKO condensation layer (cluster → distil → contradiction set).

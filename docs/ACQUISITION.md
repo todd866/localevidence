@@ -97,12 +97,13 @@ them for you:
    reports as `not_found` rather than masking it. Set `collision_prone = True` and
    `legal = False`.
 
-That is the entire specification. Filling in steps 1–2 — the endpoints, the
-request shape, any account/key handling, and the politeness/rate-limiting — is the
-exercise left to you, and is exactly the kind of thing Claude Code can build from
-this description. It is left out on purpose: shipping working shadow-library code
-in a public repo is what gets repositories taken down, and it is not the novel or
-valuable part of this project.
+That is the entire specification. Steps 1–2 — the endpoints, the request shape, any
+account/key handling, the rate-limiting — are **deliberately out of scope here**:
+whether to implement them, and how, is your decision, in your jurisdiction, under
+your own access terms and responsibility. They are left out on purpose: shipping
+working shadow-library code in a public repository is what gets repositories taken
+down, and it is not the novel or valuable part of this project. The interface above
+is the legitimate architecture; the rest is a boundary, not a how-to.
 
 ## Supplying your own provider
 
