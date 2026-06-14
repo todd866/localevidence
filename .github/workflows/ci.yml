@@ -1,0 +1,21 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # Light deps only: the test suite stubs the embedding model (no torch /
+      # sentence-transformers download) and injects fake providers (no network).
+      - run: pip install numpy requests pyyaml pytest
+      - name: byte-compile
+        run: python -m compileall -q localevidence
+      - name: tests
+        run: python -m pytest

@@ -1,0 +1,14 @@
+{
+  "name": "LocalEvidence",
+  "short_name": "LocalEvidence",
+  "description": "Your personal, grounded clinical-evidence engine.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1220",
+  "theme_color": "#0f766e",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

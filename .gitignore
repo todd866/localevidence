@@ -1,0 +1,34 @@
+# ── Private: the corpus, the state, and your acquisition plug-in ─────────────
+# The code is shared; none of this is. (See ARCHITECTURE.md "Dogfooding".)
+
+# Your acquisition provider plug-in — never committed.
+localevidence/library/providers/private.py
+
+# The corpus and the persistent indices it builds.
+data/library/
+data/passages/
+
+# The knowledge ledger (your worked questions + answers + reasoning).
+ledger/
+
+# Per-question case files (questions, evidence logs, runs).
+projects/
+
+# Secrets / local config.
+.env
+*.key
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ── OS / editor ──────────────────────────────────────────────────────────────
+.DS_Store
+*.swp
+.idea/
+.vscode/

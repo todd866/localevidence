@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "localevidence"
+version = "0.1.0"
+description = "Local-first, compounding clinical-evidence scaffolding for Claude Code"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Ian Todd" }]
+keywords = ["clinical-evidence", "retrieval", "rag", "medicine", "claude-code"]
+dependencies = [
+    "numpy>=1.24",
+    "requests>=2.28",
+    "PyYAML>=6.0",
+    "sentence-transformers>=2.2",
+    "PyMuPDF>=1.23",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[project.scripts]
+localevidence = "localevidence.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["localevidence*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,129 @@
+# LocalEvidence simulated-question bank.
+#
+# Self-play questions used by `localevidence load` to warm the system: pre-acquire
+# the corpus, build the persistent passage index, and populate the knowledge
+# ledger for the topics you actually work in. This ships as a generic
+# clinical/paediatric example — replace it with your own domains. Each entry runs
+# through the full `ask` loop. `queries` are optional focused discovery strings.
+
+- topic: eating-disorders
+  question: "In anorexia nervosa with bradycardia, what heart rate threshold warrants inpatient medical admission?"
+  queries: ["anorexia nervosa medical admission criteria bradycardia", "MARSIPAN management really sick anorexia"]
+
+- topic: eating-disorders
+  question: "How should refeeding syndrome be prevented and managed when refeeding a severely malnourished patient with anorexia nervosa?"
+  queries: ["refeeding syndrome anorexia nervosa phosphate management", "refeeding hypophosphataemia prevention guideline"]
+
+- topic: eating-disorders
+  question: "What is the evidence for the GLP-1 / appetite-regulation hypothesis in anorexia nervosa?"
+  queries: ["GLP-1 anorexia nervosa appetite", "GLP-1 agonist eating disorder"]
+
+- topic: eating-disorders
+  question: "When is compulsory nasogastric feeding justified in a patient with severe anorexia nervosa refusing food?"
+  queries: ["compulsory nasogastric feeding anorexia nervosa ethics", "involuntary refeeding eating disorder legal"]
+
+- topic: psychiatry
+  question: "How should lithium toxicity severity be assessed and when is haemodialysis indicated?"
+  queries: ["lithium poisoning extracorporeal treatment EXTRIP", "lithium intoxication haemodialysis indications"]
+
+- topic: psychiatry
+  question: "What is the first-line benzodiazepine choice for alcohol withdrawal in a patient with significant liver disease?"
+  queries: ["alcohol withdrawal benzodiazepine liver disease lorazepam diazepam", "alcohol withdrawal cirrhosis benzodiazepine"]
+
+- topic: psychiatry
+  question: "How is serotonin syndrome distinguished from neuroleptic malignant syndrome, and how is each managed?"
+  queries: ["serotonin syndrome neuroleptic malignant syndrome differentiation management"]
+
+- topic: psychiatry
+  question: "What is the evidence and monitoring requirement for clozapine-induced myocarditis?"
+  queries: ["clozapine myocarditis monitoring troponin", "clozapine cardiac monitoring guideline"]
+
+- topic: psychiatry
+  question: "How should a first episode of psychosis be worked up to exclude organic causes?"
+  queries: ["first episode psychosis organic workup investigations", "secondary psychosis medical causes"]
+
+- topic: emergency
+  question: "What is the current approach to risk-stratifying and managing serotonergic overdose in the emergency department?"
+  queries: ["antidepressant overdose serotonin toxicity emergency management"]
+
+- topic: emergency
+  question: "How should suspected NMDA-receptor encephalitis presenting with psychiatric symptoms be investigated?"
+  queries: ["anti-NMDA receptor encephalitis psychiatric presentation diagnosis"]
+
+- topic: emergency
+  question: "What are the indications for and risks of physical restraint and rapid tranquillisation in acute agitation?"
+  queries: ["rapid tranquillisation acute agitation guideline safety"]
+
+- topic: general-medicine
+  question: "How is the severity of community-acquired pneumonia assessed to decide admission versus outpatient management?"
+  queries: ["community acquired pneumonia severity CURB-65 admission"]
+
+- topic: general-medicine
+  question: "What is the evidence-based approach to managing hyponatraemia by acuity and symptom severity?"
+  queries: ["hyponatraemia management acute symptomatic correction guideline"]
+
+- topic: general-medicine
+  question: "When should venous thromboembolism prophylaxis be given to medical inpatients, and what are the contraindications?"
+  queries: ["VTE prophylaxis medical inpatients risk assessment contraindications"]
+
+- topic: general-medicine
+  question: "How should diabetic ketoacidosis be diagnosed and managed, including fluid and insulin protocols?"
+  queries: ["diabetic ketoacidosis management protocol fluids insulin"]
+
+# --- Paediatrics -------------------------------------------------------------
+
+- topic: paediatrics
+  question: "How should a febrile infant under 90 days old be investigated and managed for possible serious bacterial infection?"
+  queries: ["febrile young infant serious bacterial infection management", "febrile infant under 90 days sepsis workup"]
+
+- topic: paediatrics
+  question: "What is the evidence-based management of acute bronchiolitis in infants, and what interventions do not work?"
+  queries: ["bronchiolitis management infants guideline", "bronchiolitis bronchodilators steroids evidence"]
+
+- topic: paediatrics
+  question: "How is croup severity assessed and what is the role of corticosteroids and nebulised adrenaline?"
+  queries: ["croup dexamethasone nebulised adrenaline severity management"]
+
+- topic: paediatrics
+  question: "How should a simple febrile seizure be managed, and when is further investigation such as lumbar puncture warranted?"
+  queries: ["febrile seizure management lumbar puncture investigation children"]
+
+- topic: paediatrics
+  question: "How should paediatric diabetic ketoacidosis be managed, and how is the risk of cerebral oedema minimised?"
+  queries: ["paediatric DKA fluid management cerebral oedema", "childhood diabetic ketoacidosis guideline"]
+
+- topic: paediatrics
+  question: "How is dehydration severity assessed in a child with gastroenteritis, and when is oral versus intravenous rehydration indicated?"
+  queries: ["paediatric gastroenteritis dehydration assessment oral rehydration", "children dehydration IV fluids gastroenteritis"]
+
+- topic: paediatrics
+  question: "How is paediatric sepsis recognised early and what is the first-hour management?"
+  queries: ["paediatric sepsis recognition management bundle", "children septic shock fluid resuscitation"]
+
+- topic: paediatrics
+  question: "How is the severity of an acute asthma exacerbation in children assessed and managed?"
+  queries: ["paediatric acute asthma exacerbation severity management guideline"]
+
+- topic: paediatrics
+  question: "How are urinary tract infections diagnosed in young children, and which children need imaging follow-up?"
+  queries: ["urinary tract infection young children diagnosis imaging guideline"]
+
+- topic: paediatrics
+  question: "What is the correct intramuscular adrenaline dosing and management of anaphylaxis in children?"
+  queries: ["paediatric anaphylaxis adrenaline dosing management"]
+
+- topic: paediatrics
+  question: "What are the diagnostic criteria for Kawasaki disease and the evidence for IVIG treatment?"
+  queries: ["Kawasaki disease diagnostic criteria IVIG treatment"]
+
+- topic: paediatrics
+  question: "How are phototherapy and exchange transfusion thresholds determined in neonatal jaundice?"
+  queries: ["neonatal jaundice phototherapy exchange transfusion thresholds bilirubin"]
+
+- topic: paediatrics
+  question: "What type and rate of maintenance intravenous fluid should children receive, and why are hypotonic fluids discouraged?"
+  queries: ["paediatric maintenance IV fluids isotonic hyponatraemia", "hypotonic fluids children hyponatraemia risk"]
+
+- topic: paediatrics
+  question: "What clinical features should raise suspicion of non-accidental injury in a child presenting with fractures or bruising?"
+  queries: ["non-accidental injury children red flags fractures bruising"]

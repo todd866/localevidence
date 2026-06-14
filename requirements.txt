@@ -1,0 +1,11 @@
+# LocalEvidence dependencies. Python 3.10+.
+#
+# SQLite FTS5 (lexical index) ships with CPython — no package needed.
+# `pdftotext` (poppler) is used for PDF text if present on PATH; PyMuPDF below
+# is the in-process fallback and is recommended.
+
+numpy>=1.24
+requests>=2.28
+PyYAML>=6.0
+sentence-transformers>=2.2      # MiniLM embeddings (pulls in torch + transformers)
+PyMuPDF>=1.23                   # `import fitz` — robust PDF text extraction
