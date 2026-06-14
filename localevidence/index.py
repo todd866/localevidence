@@ -30,6 +30,15 @@ from .library import chunk_text
 
 _PAGE_MARKER = re.compile(r"^-{2,}\s*Page\s+\d+\s*-{2,}\s*$", re.M)
 
+# Drug-dosing signal: a number adjacent to a dose unit (mg/kg, mg, microgram,
+# units, mL, IU, g). Dosing tables are numeric-dense by nature — the density
+# filter below would otherwise discard them — but they are the single most
+# clinically valuable content (the dose a clinician actually needs), so a chunk
+# carrying doses is never treated as low-value.
+_DOSING_RE = re.compile(
+    r"\d\s*(?:mg|mcg|microgram|micrograms|units?|iu|ml|g)\b|\bmg/kg\b|\bmicrograms?/kg\b",
+    re.I)
+
 
 def _clean(text: str) -> str:
     return _PAGE_MARKER.sub(" ", text or "")
@@ -38,13 +47,17 @@ def _clean(text: str) -> str:
 def _is_low_value_chunk(text: str) -> bool:
     """Drop reference lists, citation dumps, and dense numeric tables —
     grounding a clinical claim in a bibliography or a stats grid is worse than
-    useless. Conservative, so real prose survives."""
+    useless. Conservative, so real prose survives — and chunks carrying drug
+    doses are always kept (they look numeric-dense but are the point)."""
     t = text or ""
     low = t.lower()
     ref_signals = (low.count("doi.org") + low.count("https://") +
                    low.count("et al") + low.count("accessed"))
     if ref_signals >= 4:
         return True
+    # Protect clinical dosing tables from the numeric-density filter below.
+    if _DOSING_RE.search(t):
+        return False
     tokens = t.split()
     if len(tokens) >= 20:
         numeric = sum(1 for w in tokens if re.fullmatch(r"[-+(]?\d[\d.,;:%)/-]*", w))

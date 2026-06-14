@@ -1,6 +1,21 @@
 from localevidence.acquire import AcquiredPaper
-from localevidence.index import PassageIndex
+from localevidence.index import PassageIndex, _is_low_value_chunk
 from localevidence.ledger import Ledger
+
+
+def test_dosing_tables_are_kept_not_dropped():
+    # the dogfooding bug: dense drug-dosing tables (the most clinically valuable
+    # content) were dropped as "low-value numeric tables".
+    dose_table = ("Cefotaxime 50 mg/kg IV 6-hourly (max 2 g). Ceftriaxone 100 mg/kg IV "
+                  "daily (max 4 g). Benzylpenicillin 60 mg/kg IV. Dexamethasone 0.15 mg/kg "
+                  "IV every 6 hours for 4 days (max 10 mg). Vancomycin 60 mg/kg/day.")
+    assert _is_low_value_chunk(dose_table) is False          # kept (the fix)
+    # genuine junk still dropped:
+    refs = ("van de Beek D Lancet 2021 doi.org/10.1/x et al accessed https://a "
+            "Hasbun R JAMA 2022 doi.org/10.2/y accessed https://b doi.org/10.3/z")
+    assert _is_low_value_chunk(refs) is True                  # reference dump
+    grid = " ".join(["12.3", "4.5", "6.7", "8.9", "10.1", "2.2", "3.3"] * 4)
+    assert _is_low_value_chunk(grid) is True                  # pure numeric grid, no doses
 
 
 def test_index_add_search_and_alignment(tmp_path):
