@@ -69,6 +69,24 @@ def test_grounded_answer_skips_revise_when_critique_ok(monkeypatch):
     assert out["answer"] == out["draft"]
 
 
+def test_reasoning_answer_runs_scaffold(monkeypatch):
+    def fake(prompt, *, system=None, model=None, **kw):
+        if "can't-miss" in prompt or "can’t-miss" in prompt:   # frame OR safety-check
+            if "audit" in prompt.lower():
+                return "- did not weigh pre-test probability"        # safety-check: not OK
+            return "Frame: worst-case is volvulus; weigh base rates."  # frame
+        if "Rewrite the answer" in prompt:
+            return "Exclude volvulus first; positive is likely false at low prevalence [s1#0]."
+        return "Initial reasoned draft [s1#0]."                       # reasoned draft
+    monkeypatch.setattr(inference, "generate", fake)
+    out = harness.reasoning_answer("Pros and cons of test X?",
+                                   retrieve=lambda q, k: _passages(), model="ollama:x")
+    assert out["stages"] == ["frame", "retrieve", "draft", "safety-check", "revise", "verify"]
+    assert "likely false" in out["answer"]                            # the revised, reasoned answer
+    assert out["grounding"]["valid"] == ["s1#0"]                      # factual claim still grounded
+    assert out["frame"]
+
+
 def test_grounded_answer_no_passages_is_honest(monkeypatch):
     monkeypatch.setattr(inference, "generate", lambda *a, **k: "should not be called")
     out = harness.grounded_answer("Q?", retrieve=lambda q, k: [], model="ollama:x")

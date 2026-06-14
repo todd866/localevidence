@@ -104,6 +104,7 @@ def main(argv=None) -> int:
     el.add_argument("--vignettes", default=None, help="JSON file of vignette dicts with question/rubric/type/id")
     el.add_argument("--model", default=None, help="Model spec e.g. ollama:qwen2.5:14b")
     el.add_argument("-k", "--passages", type=int, default=8)
+    el.add_argument("--mode", default="grounded", choices=["grounded", "reasoning"], help="grounded (retrieval) or reasoning (scaffolded, for management/judgment/epi)")
     el.add_argument("--baseline", action="store_true", help="Also run the one-shot control to isolate the harness lift")
     el.add_argument("--rubric", action="store_true", help="Score rubric completeness (needs --vignettes with rubrics)")
     el.add_argument("--limit", type=int, default=0, help="Run at most N items")
@@ -279,7 +280,8 @@ def main(argv=None) -> int:
                   file=sys.stderr)
         try:
             res = run_eval(items, retrieve=retrieve, model=args.model, k=args.passages,
-                           baseline=args.baseline, rubric=args.rubric, on_result=progress)
+                           baseline=args.baseline, rubric=args.rubric, mode=args.mode,
+                           on_result=progress)
         except InferenceError as e:
             print(f"local eval unavailable: {e}", file=sys.stderr)
             return 1

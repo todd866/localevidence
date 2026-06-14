@@ -85,16 +85,18 @@ def lift(harness_results: Sequence[dict], baseline_results: Sequence[dict]) -> d
 def run_eval(items: Sequence[Union[str, dict]], *,
              retrieve: Callable[[str, int], list[dict]],
              model: Optional[str] = None, k: int = 8, baseline: bool = False,
-             rubric: bool = False,
+             rubric: bool = False, mode: str = "grounded",
              on_result: Optional[Callable[[int, dict], None]] = None) -> dict:
     """Run the harness over `items` (plain question strings, or vignette dicts with
-    `question`/`rubric`/`type`/`id`). Optionally also the one-shot baseline and
-    rubric-completeness scoring."""
+    `question`/`rubric`/`type`/`id`). mode='grounded' (citation-optimised, for
+    retrieval) or 'reasoning' (scaffolded, for management/judgment/epi). Optionally
+    also the one-shot baseline and rubric-completeness scoring."""
+    answer_fn = harness.reasoning_answer if mode == "reasoning" else harness.grounded_answer
     h_results, b_results, rows = [], [], []
     for i, item in enumerate(items):
         q = item["question"] if isinstance(item, dict) else item
         rub = item.get("rubric") if isinstance(item, dict) else None
-        h = harness.grounded_answer(q, retrieve=retrieve, model=model, k=k)
+        h = answer_fn(q, retrieve=retrieve, model=model, k=k)
         row = {"id": item.get("id") if isinstance(item, dict) else None,
                "type": item.get("type") if isinstance(item, dict) else None,
                "question": q, "answer": h["answer"], "stages": h["stages"],
