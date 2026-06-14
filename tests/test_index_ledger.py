@@ -47,3 +47,25 @@ def test_ledger_find_similar_excludes_identical(tmp_path):
     led.record("identical question text")
     # identical string is deliberately excluded (it surfaces *different* priors)
     assert led.find_similar("identical question text", threshold=0.99) == []
+
+
+def test_bare_search_does_not_inject_offtopic_guidelines(tmp_path):
+    # An off-topic guideline indexed FIRST, then a long on-topic guideline whose
+    # many chunks fill the organic top-k. The off-topic one shares none of the
+    # query's lexical tokens, so it can only reach the results via the
+    # tier-guarantee — which must NOT fire on a bare (no-focus_slugs) search.
+    g = tmp_path / "g.txt"
+    g.write_text("anorexia nervosa refeeding medical instability bradycardia management. " * 60)
+    a = tmp_path / "a.txt"
+    a.write_text("croup dexamethasone severity adrenaline nebulised airway steroid "
+                 "children management treatment stridor barking cough. " * 400)
+    idx = PassageIndex(store_dir=tmp_path / "store")
+    idx.add_papers([
+        AcquiredPaper(slug="anorexia-gl", title="Anorexia guideline",
+                      text_path=str(g), tier="guideline"),
+        AcquiredPaper(slug="croup-gl", title="Croup guideline",
+                      text_path=str(a), tier="guideline"),
+    ], verbose=False)
+    res = idx.search("croup dexamethasone severity adrenaline nebulised", k=6)
+    assert any(r.slug == "croup-gl" for r in res)        # on-topic surfaces
+    assert all(r.slug != "anorexia-gl" for r in res)     # off-topic NOT injected

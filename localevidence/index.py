@@ -257,24 +257,30 @@ class PassageIndex:
         out = [p for p in (self._passage(pid, sc, dense_rank.get(pid), sparse_rank.get(pid))
                            for pid, sc in top) if p]
 
-        # Tier guarantee: each of THIS question's guideline/SR papers contributes
-        # its single best passage even if organic fusion buried it.
-        covered = {p.slug for p in out}
-        want = focus_slugs if focus_slugs is not None else self.indexed_slugs
-        high_tier = []
-        for m in self.meta:
-            if (m.get("tier") in ("guideline", "systematic-review")
-                    and m["slug"] in want and m["slug"] not in covered
-                    and m["slug"] not in high_tier):
-                high_tier.append(m["slug"])
-        for slug in high_tier[:4]:
-            pids = [i for i, m in enumerate(self.meta) if m["slug"] == slug]
-            if pids:
-                best = max(pids, key=lambda i: sims[i])
-                p = self._passage(best, float(sims[best]), dense_rank.get(best),
-                                  sparse_rank.get(best), guaranteed=True)
-                if p:
-                    out.append(p)
+        # Tier guarantee: each of THIS question's OWN guideline/SR papers
+        # contributes its single best passage even if organic fusion buried it.
+        # Only fires when the caller scoped the question's papers via focus_slugs.
+        # A bare search (no focus — e.g. the server / PWA) must NOT fall back to
+        # the whole corpus here: that injected the first-indexed guidelines
+        # regardless of relevance (e.g. unrelated guidelines bleeding into every
+        # query). Bare search relies on the relevance-gated guideline surfacing
+        # below instead.
+        if focus_slugs:
+            covered = {p.slug for p in out}
+            high_tier = []
+            for m in self.meta:
+                if (m.get("tier") in ("guideline", "systematic-review")
+                        and m["slug"] in focus_slugs and m["slug"] not in covered
+                        and m["slug"] not in high_tier):
+                    high_tier.append(m["slug"])
+            for slug in high_tier[:4]:
+                pids = [i for i, m in enumerate(self.meta) if m["slug"] == slug]
+                if pids:
+                    best = max(pids, key=lambda i: sims[i])
+                    p = self._passage(best, float(sims[best]), dense_rank.get(best),
+                                      sparse_rank.get(best), guaranteed=True)
+                    if p:
+                        out.append(p)
 
         # Local-guideline surfacing. Authoritative guidelines (RCH etc.) are
         # written in terse bedside style and lose the dense race to academic
