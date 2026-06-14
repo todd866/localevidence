@@ -96,6 +96,16 @@ def main(argv=None) -> int:
     sy.add_argument("question", nargs="+", help="The clinical question")
     sy.add_argument("--model", default=None, help="Model spec e.g. ollama:qwen2.5:14b (or set LOCALEVIDENCE_MODEL)")
     sy.add_argument("-k", "--passages", type=int, default=8, help="Passages to ground in")
+    sy.add_argument("--harness", action="store_true", help="Full multi-stage harness (expand->draft->critique->revise->verify), not one-shot")
+    sy.add_argument("--show-grounding", action="store_true", help="Print the grounding report (harness mode)")
+
+    el = sub.add_parser("eval-local", help="Long-form eval: run the grounded harness over many questions on-device and score grounding")
+    el.add_argument("--questions", required=True, help="File of questions (one per line)")
+    el.add_argument("--model", default=None, help="Model spec e.g. ollama:qwen2.5:14b")
+    el.add_argument("-k", "--passages", type=int, default=8)
+    el.add_argument("--baseline", action="store_true", help="Also run the one-shot control to isolate the harness lift")
+    el.add_argument("--limit", type=int, default=0, help="Run at most N questions")
+    el.add_argument("--out", default="eval-local.json", help="Write full results here")
 
     pk = sub.add_parser("pack", help="Distributable knowledge pack: shareable list + summaries + map (no corpus)")
     pk.add_argument("action", choices=["export", "harvest"], help="export a pack / harvest (rebuild) from one")
@@ -213,15 +223,62 @@ def main(argv=None) -> int:
         from .verify import _passage_view
         from .inference import synthesize_answer, InferenceError
         q = " ".join(args.question)
-        passages = [_passage_view(p) for p in PassageIndex().search(q, k=args.passages)]
+        idx = PassageIndex()
+        retrieve = lambda query, k: [_passage_view(p) for p in idx.search(query, k=k)]
         try:
-            out = synthesize_answer(q, passages, model=args.model)
+            if args.harness:
+                from .harness import grounded_answer
+                out = grounded_answer(q, retrieve=retrieve, model=args.model, k=args.passages)
+                print(out["answer"])
+                g = out["grounding"]
+                tail = (f"\n— {out['model']} · stages: {'->'.join(out['stages'])} · "
+                        f"{out['n_passages']} passages · grounding {int(g['coverage']*100)}%"
+                        f" · {g['hallucinated_citations']} hallucinated cite(s)")
+                print(tail, file=sys.stderr)
+                if args.show_grounding:
+                    print("  valid:", ", ".join(g["valid"]) or "(none)", file=sys.stderr)
+                    if g["invalid"]:
+                        print("  HALLUCINATED:", ", ".join(g["invalid"]), file=sys.stderr)
+            else:
+                out = synthesize_answer(q, retrieve(q, args.passages), model=args.model)
+                print(out["answer"])
+                print(f"\n— {out['model']} · grounded in {out['n_passages']} corpus passages",
+                      file=sys.stderr)
         except InferenceError as e:
             print(f"local synthesis unavailable: {e}", file=sys.stderr)
             return 1
-        print(out["answer"])
-        print(f"\n— {out['model']} · grounded in {out['n_passages']} corpus passages",
-              file=sys.stderr)
+        return 0
+
+    if args.command == "eval-local":
+        from pathlib import Path
+        from .index import PassageIndex
+        from .verify import _passage_view
+        from .inference import InferenceError
+        from .eval import run_eval
+        qs = [l.strip() for l in Path(args.questions).read_text().splitlines()
+              if l.strip() and not l.startswith("#")]
+        if args.limit:
+            qs = qs[:args.limit]
+        idx = PassageIndex()
+        retrieve = lambda query, k: [_passage_view(p) for p in idx.search(query, k=k)]
+        print(f"eval-local: {len(qs)} questions through {'harness+baseline' if args.baseline else 'harness'} "
+              f"on {args.model or 'LOCALEVIDENCE_MODEL'} ...", file=sys.stderr)
+        def progress(i, row):
+            g = row["harness"]
+            print(f"  [{i+1}/{len(qs)}] grounding {int(g['coverage']*100)}% "
+                  f"({g['hallucinated_citations']} hallucinated) — {row['question'][:60]}",
+                  file=sys.stderr)
+        try:
+            res = run_eval(qs, retrieve=retrieve, model=args.model,
+                           k=args.passages, baseline=args.baseline, on_result=progress)
+        except InferenceError as e:
+            print(f"local eval unavailable: {e}", file=sys.stderr)
+            return 1
+        import json as _json
+        Path(args.out).write_text(_json.dumps(res, indent=1))
+        print(f"\n=== summary ({res['summary']['n']} Qs, {res['model']}) ===")
+        print(_json.dumps(res.get("lift", res["summary"]), indent=2))
+        print(f"full results -> {args.out}", file=sys.stderr)
         return 0
 
     if args.command == "pack":
