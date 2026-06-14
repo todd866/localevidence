@@ -1,0 +1,110 @@
+[
+  {
+    "id": "febrile-seizure-imaging",
+    "type": "test-decision",
+    "question": "A previously well 5-year-old has had a single, brief, generalised seizure during a febrile illness (otitis media), and is now alert, afebrile, and neurologically normal. The parents ask for a CT head and an EEG. What are the pros and cons of ordering each in THIS child, and what would you do?",
+    "rubric": [
+      "A simple febrile seizure does not warrant neuroimaging or EEG",
+      "CT carries ionising-radiation risk and often needs sedation, for very low diagnostic yield here",
+      "EEG does not predict febrile-seizure recurrence or future epilepsy after a simple febrile seizure",
+      "Names the red flags that WOULD change this (focal/prolonged/complex seizure, abnormal neuro exam, persistent altered consciousness, age <6 months, suspected meningitis)",
+      "Recommends reassurance and safety-netting rather than investigation, and treats the source (otitis media)"
+    ]
+  },
+  {
+    "id": "neonate-bilious-vomiting",
+    "type": "test-decision",
+    "question": "A 3-week-old presents with new bilious vomiting and is otherwise haemodynamically stable. Weigh the pros and cons of an upper GI contrast study, an abdominal ultrasound, and immediate surgical referral. What drives your choice and what is the time pressure?",
+    "rubric": [
+      "Bilious vomiting in a neonate is malrotation with midgut volvulus until proven otherwise — a surgical emergency",
+      "Upper GI contrast study is the gold standard for malrotation but takes time to arrange",
+      "Ultrasound is operator-dependent and a normal scan does not exclude malrotation",
+      "Surgical referral must happen in parallel with imaging, not after it — volvulus causes ischaemia within hours",
+      "Do not delay: keep nil by mouth, NG decompression, IV access/fluids while expediting"
+    ]
+  },
+  {
+    "id": "athlete-exertional-syncope",
+    "type": "test-decision",
+    "question": "A 16-year-old competitive athlete reports two episodes of syncope DURING exertion, with a family history of a young sudden death. Weigh the pros and cons of a 12-lead ECG, transthoracic echocardiogram, and exercise stress test, and how the history changes their priority.",
+    "rubric": [
+      "Exertional syncope plus a family history of young sudden death is high-risk and mandates urgent cardiac evaluation, not reassurance",
+      "12-lead ECG is cheap, fast, first-line and screens for HCM, long QT, WPW, Brugada",
+      "Echocardiogram is needed to assess for HCM / structural disease and is high-yield given this history",
+      "Exercise testing can provoke arrhythmia and should only be done in a monitored setting after structural disease is considered",
+      "Advise restriction from competitive sport until evaluation is complete"
+    ]
+  },
+  {
+    "id": "toddler-constipation-axr",
+    "type": "test-decision",
+    "question": "A 2-year-old has a several-month history typical of functional constipation, a normal examination, and is thriving. The parents request an abdominal X-ray to 'confirm the blockage'. What are the pros and cons of ordering it?",
+    "rubric": [
+      "Functional constipation is a clinical diagnosis; an abdominal X-ray is not indicated and does not confirm or exclude it",
+      "AXR has poor reliability for faecal loading and adds ionising radiation",
+      "A normal or abnormal film would not change management",
+      "Names red flags that WOULD prompt investigation (delayed meconium, failure to thrive, abnormal exam, ribbon stools)",
+      "Manage with disimpaction/maintenance laxatives, diet, and education rather than imaging"
+    ]
+  },
+  {
+    "id": "dka-t1dm-coeliac",
+    "type": "management",
+    "question": "A 14-year-old with type 1 diabetes and coeliac disease presents in DKA after 2 days of vomiting: GCS 12, pH 7.05, glucose 28, sodium 128 (measured), moderate dehydration. Outline your fluid and insulin management, the specific risk to anticipate, and how the comorbidities change your plan.",
+    "rubric": [
+      "Cerebral oedema is the key risk: avoid fluid boluses beyond what shock requires and correct deficits slowly over 48 hours",
+      "Start insulin infusion (0.05-0.1 U/kg/hr) only AFTER initial fluids; do NOT give an insulin bolus",
+      "Interpret sodium with the corrected value (glucose effect) and watch the trend as glucose falls",
+      "GCS 12 needs close neuro observations and a low threshold to treat cerebral oedema (hypertonic saline/mannitol)",
+      "Add dextrose to fluids once glucose falls (~12-15) to allow continued insulin while clearing ketones; monitor potassium and replace"
+    ]
+  },
+  {
+    "id": "ex-prem-bronchiolitis-cardiac",
+    "type": "management",
+    "question": "A 9-month-old, born at 26 weeks with chronic lung disease of prematurity and a small VSD, presents with bronchiolitis: SpO2 88%, marked work of breathing, and feeding <50% of normal. How do the prematurity, chronic lung disease, and cardiac lesion change your respiratory, fluid, and disposition decisions?",
+    "rubric": [
+      "These comorbidities mark high-risk bronchiolitis with a low threshold for admission and escalation",
+      "Give supplemental oxygen and consider high-flow / respiratory support early given CLD and hypoxia",
+      "Non-oral hydration is needed (NG first-line) at restricted (~2/3) maintenance given SIADH and cardiac-failure risk",
+      "The VSD + CLD raise the risk of cardiac failure and fluid overload — monitor closely and avoid full-maintenance fluids",
+      "Disposition: admit, not discharge; consider HDU/PICU given the risk profile and palivizumab/RSV context"
+    ]
+  },
+  {
+    "id": "epi-low-pretest-panels",
+    "type": "epidemiological",
+    "question": "The parents of a well, thriving 7-year-old with vague intermittent tiredness request a broad 'food-intolerance IgG panel' and Lyme serology (you are in a non-endemic area). Reason through the pros and cons given the pre-test probability, and explain what a positive result would actually mean.",
+    "rubric": [
+      "The pre-test probability of these conditions here is very low, which drives the whole decision",
+      "With low prevalence and imperfect specificity, the positive predictive value is low — most positives will be FALSE positives",
+      "IgG food-intolerance panels are not a validated test for food allergy/intolerance and should not be ordered",
+      "A false-positive triggers a cascade of further tests, dietary restriction, and anxiety (net harm)",
+      "Recommends targeted history/exam and reassurance rather than broad low-yield screening"
+    ]
+  },
+  {
+    "id": "epi-newborn-screen-positive",
+    "type": "epidemiological",
+    "question": "A newborn screening result returns POSITIVE for a metabolic condition with a birth prevalence around 1 in 50,000. The screen is highly sensitive but its specificity is not perfect. The parents are distraught and assume their baby has the disease. Explain what this positive result means and your next step.",
+    "rubric": [
+      "Because the condition is rare, even a good screening test has a LOW positive predictive value — a positive is more likely a false positive than true disease",
+      "Screening is designed to maximise sensitivity, so it deliberately accepts false positives",
+      "A confirmatory DIAGNOSTIC test is required before concluding the baby is affected",
+      "Counsel the parents to avoid premature alarm while explaining the need for confirmation",
+      "Explains the base-rate concept plainly rather than treating the screen as diagnostic"
+    ]
+  },
+  {
+    "id": "als-bulbar-aspiration",
+    "type": "management",
+    "question": "A 62-year-old with bulbar-onset ALS (FVC 55%, declining) is admitted with aspiration pneumonia and ongoing weight loss. Discuss the management priorities, the role and timing of non-invasive ventilation and gastrostomy, and how the respiratory status affects the safety of each intervention.",
+    "rubric": [
+      "Treat the aspiration pneumonia and address aspiration risk (swallow assessment, secretion management)",
+      "NIV improves survival and quality of life in ALS and is indicated as respiratory function declines (FVC ~50% or symptomatic)",
+      "Gastrostomy should be placed BEFORE respiratory function falls too far — PEG/RIG is safer while FVC is higher (~>50%)",
+      "Falling FVC makes both sedation and gastrostomy placement riskier, so timing/route (e.g. RIG vs PEG) must account for respiratory reserve",
+      "Involve multidisciplinary/palliative care and clarify goals of care and advance directives"
+    ]
+  }
+]

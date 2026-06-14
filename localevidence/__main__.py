@@ -99,12 +99,14 @@ def main(argv=None) -> int:
     sy.add_argument("--harness", action="store_true", help="Full multi-stage harness (expand->draft->critique->revise->verify), not one-shot")
     sy.add_argument("--show-grounding", action="store_true", help="Print the grounding report (harness mode)")
 
-    el = sub.add_parser("eval-local", help="Long-form eval: run the grounded harness over many questions on-device and score grounding")
-    el.add_argument("--questions", required=True, help="File of questions (one per line)")
+    el = sub.add_parser("eval-local", help="Long-form eval: run the grounded harness over many questions on-device and score grounding (+ rubric completeness)")
+    el.add_argument("--questions", default=None, help="File of plain questions (one per line)")
+    el.add_argument("--vignettes", default=None, help="JSON file of vignette dicts with question/rubric/type/id")
     el.add_argument("--model", default=None, help="Model spec e.g. ollama:qwen2.5:14b")
     el.add_argument("-k", "--passages", type=int, default=8)
     el.add_argument("--baseline", action="store_true", help="Also run the one-shot control to isolate the harness lift")
-    el.add_argument("--limit", type=int, default=0, help="Run at most N questions")
+    el.add_argument("--rubric", action="store_true", help="Score rubric completeness (needs --vignettes with rubrics)")
+    el.add_argument("--limit", type=int, default=0, help="Run at most N items")
     el.add_argument("--out", default="eval-local.json", help="Write full results here")
 
     pk = sub.add_parser("pack", help="Distributable knowledge pack: shareable list + summaries + map (no corpus)")
@@ -255,29 +257,36 @@ def main(argv=None) -> int:
         from .verify import _passage_view
         from .inference import InferenceError
         from .eval import run_eval
-        qs = [l.strip() for l in Path(args.questions).read_text().splitlines()
-              if l.strip() and not l.startswith("#")]
+        if args.vignettes:
+            items = json.loads(Path(args.vignettes).read_text())
+        elif args.questions:
+            items = [l.strip() for l in Path(args.questions).read_text().splitlines()
+                     if l.strip() and not l.startswith("#")]
+        else:
+            print("eval-local: pass --questions <file> or --vignettes <json>", file=sys.stderr)
+            return 2
         if args.limit:
-            qs = qs[:args.limit]
+            items = items[:args.limit]
         idx = PassageIndex()
         retrieve = lambda query, k: [_passage_view(p) for p in idx.search(query, k=k)]
-        print(f"eval-local: {len(qs)} questions through {'harness+baseline' if args.baseline else 'harness'} "
+        print(f"eval-local: {len(items)} items through {'harness+baseline' if args.baseline else 'harness'} "
               f"on {args.model or 'LOCALEVIDENCE_MODEL'} ...", file=sys.stderr)
         def progress(i, row):
-            g = row["harness"]
-            print(f"  [{i+1}/{len(qs)}] grounding {int(g['coverage']*100)}% "
-                  f"({g['hallucinated_citations']} hallucinated) — {row['question'][:60]}",
+            g = row["harness"]; rub = row.get("rubric")
+            rtxt = f" · rubric {int(rub['rubric_coverage']*100)}%" if rub else ""
+            print(f"  [{i+1}/{len(items)}] grounding {int(g['coverage']*100)}% "
+                  f"({g['hallucinated_citations']} halluc){rtxt} — {row['question'][:55]}",
                   file=sys.stderr)
         try:
-            res = run_eval(qs, retrieve=retrieve, model=args.model,
-                           k=args.passages, baseline=args.baseline, on_result=progress)
+            res = run_eval(items, retrieve=retrieve, model=args.model, k=args.passages,
+                           baseline=args.baseline, rubric=args.rubric, on_result=progress)
         except InferenceError as e:
             print(f"local eval unavailable: {e}", file=sys.stderr)
             return 1
         import json as _json
         Path(args.out).write_text(_json.dumps(res, indent=1))
-        print(f"\n=== summary ({res['summary']['n']} Qs, {res['model']}) ===")
-        print(_json.dumps(res.get("lift", res["summary"]), indent=2))
+        print(f"\n=== summary ({res['summary']['n']} items, {res['model']}) ===")
+        print(_json.dumps({k: res[k] for k in ("lift", "summary", "rubric_summary") if k in res}, indent=2))
         print(f"full results -> {args.out}", file=sys.stderr)
         return 0
 

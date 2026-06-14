@@ -12,7 +12,8 @@ isolated. Because the model is local and free, run it over hundreds of questions
 """
 from __future__ import annotations
 
-from typing import Callable, Optional, Sequence
+import re
+from typing import Callable, Optional, Sequence, Union
 
 from . import harness, inference
 
@@ -23,6 +24,33 @@ def baseline_answer(question: str, passages: Sequence[dict], *,
     ans = inference.synthesize_answer(question, passages, model=model)["answer"]
     return {"answer": ans,
             "grounding": harness.verify_citations(ans, [p["id"] for p in passages])}
+
+
+def score_rubric(answer: str, rubric: Sequence[str], *,
+                 model: Optional[str] = None) -> Optional[dict]:
+    """Completeness check: did the answer address each rubric point a good answer
+    MUST cover? One batched yes/no pass by the (free, local) model. This is the
+    metric that matters for reasoning questions, where grounding-coverage is not
+    enough. NB: grading the model with the same model is a known limitation — it
+    measures whether the considerations are present, not whether they are correct;
+    the full answers are kept for human inspection alongside."""
+    if not rubric:
+        return None
+    crit = "\n".join(f"{i + 1}. {p}" for i, p in enumerate(rubric))
+    prompt = (f"A clinical answer is given, then numbered criteria. For EACH "
+              f"criterion, decide whether the answer adequately addresses it. Reply "
+              f"with exactly one line per criterion as 'N: YES' or 'N: NO', nothing "
+              f"else.\n\nAnswer:\n{answer}\n\nCriteria:\n{crit}")
+    raw = inference.generate(prompt, model=model)
+    verdicts: dict[int, bool] = {}
+    for line in raw.splitlines():
+        m = re.match(r"\s*(\d+)\s*[:.\)]\s*(YES|NO)", line, re.I)
+        if m:
+            verdicts[int(m.group(1))] = m.group(2).upper().startswith("Y")
+    covered = [verdicts.get(i + 1, False) for i in range(len(rubric))]
+    return {"rubric_n": len(rubric), "rubric_covered": sum(covered),
+            "rubric_coverage": round(sum(covered) / len(rubric), 3),
+            "missed": [rubric[i] for i in range(len(rubric)) if not covered[i]]}
 
 
 def _g(r: dict) -> dict:
@@ -54,20 +82,30 @@ def lift(harness_results: Sequence[dict], baseline_results: Sequence[dict]) -> d
             "hallucination_reduction": round(b["mean_hallucinated"] - h["mean_hallucinated"], 3)}
 
 
-def run_eval(questions: Sequence[str], *, retrieve: Callable[[str, int], list[dict]],
+def run_eval(items: Sequence[Union[str, dict]], *,
+             retrieve: Callable[[str, int], list[dict]],
              model: Optional[str] = None, k: int = 8, baseline: bool = False,
+             rubric: bool = False,
              on_result: Optional[Callable[[int, dict], None]] = None) -> dict:
-    """Run the harness (and optionally the one-shot baseline) over `questions`."""
+    """Run the harness over `items` (plain question strings, or vignette dicts with
+    `question`/`rubric`/`type`/`id`). Optionally also the one-shot baseline and
+    rubric-completeness scoring."""
     h_results, b_results, rows = [], [], []
-    for i, q in enumerate(questions):
+    for i, item in enumerate(items):
+        q = item["question"] if isinstance(item, dict) else item
+        rub = item.get("rubric") if isinstance(item, dict) else None
         h = harness.grounded_answer(q, retrieve=retrieve, model=model, k=k)
-        row = {"question": q, "answer": h["answer"], "stages": h["stages"],
+        row = {"id": item.get("id") if isinstance(item, dict) else None,
+               "type": item.get("type") if isinstance(item, dict) else None,
+               "question": q, "answer": h["answer"], "stages": h["stages"],
                "harness": h["grounding"]}
         h_results.append(h)
         if baseline and h["passages"]:
             b = baseline_answer(q, h["passages"], model=model)
             row["baseline"] = b["grounding"]
             b_results.append(b)
+        if rubric and rub:
+            row["rubric"] = score_rubric(h["answer"], rub, model=model)
         rows.append(row)
         if on_result:
             on_result(i, row)
@@ -75,4 +113,12 @@ def run_eval(questions: Sequence[str], *, retrieve: Callable[[str, int], list[di
            "summary": summarize(h_results)}
     if baseline and b_results:
         out["lift"] = lift(h_results, b_results)
+    rub_rows = [r["rubric"] for r in rows if r.get("rubric")]
+    if rub_rows:
+        n = len(rub_rows)
+        out["rubric_summary"] = {
+            "n": n,
+            "mean_rubric_coverage": round(sum(x["rubric_coverage"] for x in rub_rows) / n, 3),
+            "fully_covered": sum(1 for x in rub_rows if x["rubric_coverage"] >= 0.99),
+        }
     return out
