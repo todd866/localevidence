@@ -1,6 +1,6 @@
 """The local paper library: catalog + PDF/text store + acquisition cascade.
 
-A self-contained replacement for the personal `PaperLibrary` the author runs.
+A self-contained replacement for a personal `PaperLibrary`-style stack.
 The public surface the rest of LocalEvidence uses:
 
   - pull(doi, title=, ...)  -> acquire a paper (legal OA providers by default)

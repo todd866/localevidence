@@ -4,7 +4,7 @@ Deduped by DOI/MD5; every paper acquired anywhere lands here so it is never
 re-fetched. This is the thing that *compounds*: the corpus you build by using
 the tool is the moat. Ships empty — it grows as you ask questions.
 
-Self-contained: this replaces the personal `PaperLibrary` the author runs. The
+Self-contained: this replaces a personal `PaperLibrary`-style stack. The
 schema is intentionally the same shape so a personal library can be pointed at
 (set ``LOCALEVIDENCE_LIBRARY``) or migrated.
 """

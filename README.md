@@ -54,10 +54,11 @@ already hold and are entitled to use:
 
 These cover a large fraction of the literature on their own.
 
-**The author runs a further, last-resort tier** that resolves a DOI on a *shadow
+**Beyond open access, the cascade's last-resort tier** resolves a DOI on a *shadow
 library* (Anna's Archive / LibGen / Sci-Hub) when no open-access copy exists.
-**That machinery is deliberately NOT included in this repository.** What ships is
-the *seam*: a documented `ShadowProvider` interface that raises
+**That tier is deliberately NOT included in this repository** — it's the one part
+you supply yourself. What ships is the *seam*: a documented `ShadowProvider`
+interface that raises
 `NotImplementedError`, so the default cascade is open-access only. If you want to
 use it that way, you rebuild that tier yourself — the interface, the reasons each
 safety guard exists, and the conceptual steps are spelled out in
@@ -165,10 +166,10 @@ nothing private enters git history.
 ## Provenance
 
 The `localevidence/library/` package is a clean, self-contained reimplementation
-of the subset of the author's personal paper-management stack that this tool
-needs (catalog, text extraction, title verification, OA acquisition, chunking).
-The author's own instance points at a larger private library and the unshipped
-acquisition tier above; this repository runs standalone with neither.
+of the subset of a personal paper-management stack that this tool needs (catalog,
+text extraction, title verification, OA acquisition, chunking). A fuller private
+deployment can point at a larger private library and add the last-resort tier
+above; this repository runs standalone with neither.
 
 ## License
 

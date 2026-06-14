@@ -2,9 +2,9 @@
 
 This document specifies how LocalEvidence gets full text, how to add your own
 provider, and exactly what the deliberately-unshipped "shadow" tier would have to
-do. It is the **kernel**: enough structure that you (with Claude Code) can rebuild
-what the author runs, without this repository shipping anything that fetches from
-a shadow library.
+do. It is the **kernel**: enough structure that you (with Claude Code) could rebuild
+such a tier yourself, without this repository shipping anything that fetches from a
+shadow library.
 
 ## The model
 
@@ -79,9 +79,9 @@ cascade is **open-access only** unless you add a tier below.
 
 ## The shadow tier — specified, not shipped
 
-The author keeps a last-resort provider that resolves a DOI on a *shadow library*
-(Anna's Archive / LibGen / Sci-Hub) when no OA copy exists. It is **not in this
-repository**; `providers/shadow.py` is a stub that raises `NotImplementedError`.
+The cascade's last-resort tier — a provider that resolves a DOI on a *shadow
+library* (Anna's Archive / LibGen / Sci-Hub) when no OA copy exists — is **not in
+this repository**; `providers/shadow.py` is a stub that raises `NotImplementedError`.
 If you choose to run acquisition that way, you implement one `fetch` method.
 
 Conceptually, a shadow provider does three things — and nothing here does any of

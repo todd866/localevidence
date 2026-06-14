@@ -2,9 +2,9 @@
 
 WHAT THIS IS
 ------------
-The author's personal instance of this tool keeps a last-resort acquisition tier
-that resolves a DOI on a shadow library (Anna's Archive / LibGen / Sci-Hub) when
-no open-access copy exists. That tier is **not included in this repository** and
+Beyond open access, the cascade's last-resort tier resolves a DOI on a shadow
+library (Anna's Archive / LibGen / Sci-Hub) when no open-access copy exists. That
+tier is **not included in this repository** and
 this class does not fetch anything — `fetch()` raises NotImplementedError, so the
 default cascade is open-access only and entirely legal.
 

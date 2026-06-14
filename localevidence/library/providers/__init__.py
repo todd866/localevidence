@@ -103,8 +103,8 @@ def load_shadow_provider():
     3. Otherwise the documented ``ShadowProvider`` stub (raises
        NotImplementedError, so the cascade stays open-access only).
 
-    This is how the author runs the *public* repo as a daily driver: the code is
-    shared; the private acquisition implementation and the corpus are not.
+    This is how the *public* repo runs as a daily driver: the code is shared; the
+    private acquisition implementation and the corpus are not.
     """
     spec = os.environ.get("LOCALEVIDENCE_SHADOW")
     if spec:
