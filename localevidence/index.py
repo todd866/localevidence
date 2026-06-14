@@ -143,6 +143,17 @@ class PassageIndex:
                         else np.zeros((0, 384), dtype="float32"))
         np.save(self.vec_path, self.vectors)
 
+    def reload(self) -> None:
+        """Re-read the on-disk store in place after another writer grew it (e.g. an
+        acquire-on-miss pull). Keeps this object's identity so warm callers — the
+        server's `_INDEX` — see the new passages without re-instantiating."""
+        self.meta = self._load_meta()
+        self.indexed_slugs = {m["slug"] for m in self.meta}
+        self.vectors = (np.load(self.vec_path) if self.vec_path.exists()
+                        else np.zeros((0, 384), dtype="float32"))
+        if self.vectors.shape[0] != len(self.meta):
+            self._rebuild_vectors()
+
     def stats(self) -> dict:
         return {"papers": len(self.indexed_slugs), "passages": len(self.meta)}
 

@@ -84,6 +84,8 @@ def verify_evidence(claim: dict, *, index, citation: Optional[dict] = None,
         topics = claim.get("topics") or [q]
         topic = (" ".join(topics) if isinstance(topics, list) else str(topics))[:80]
         res = acquirer(topic) or {}
+        if hasattr(index, "reload"):
+            index.reload()  # see the freshly-pulled passages before re-searching
         passages = index.search(q, k=k)
         conf = confidence(passages)
         acquired = {"ran": True, "pulled": int(res.get("pulled", 0)), "topic": topic}

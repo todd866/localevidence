@@ -9,6 +9,7 @@ projects/<slug>/runs/<run_id>/evidence-pack.md for synthesis.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 
 
@@ -81,6 +82,15 @@ def main(argv=None) -> int:
     il.add_argument("--limit", type=int, default=0, help="Index at most N papers")
     il.add_argument("--batch", type=int, default=150, help="Papers per persisted chunk (resumable on a big run)")
     il.add_argument("--quiet", action="store_true")
+
+    vf = sub.add_parser("verify", help="Verify one claim against the corpus (headless; evidence + provenance, no verdict)")
+    vf.add_argument("text", help="The claim text")
+    vf.add_argument("--context", default="")
+    vf.add_argument("-t", "--topic", action="append", default=[], help="Topic hint (repeatable)")
+    vf.add_argument("--doi", default=None, help="A cited DOI to provenance-check")
+    vf.add_argument("-k", type=int, default=8, help="Passages to retrieve")
+    vf.add_argument("--acquire", action="store_true", help="Acquire-on-miss when coverage is thin")
+    vf.add_argument("--importance", type=int, default=3, help="1-3; acquire only fires at >=2")
 
     pk = sub.add_parser("pack", help="Distributable knowledge pack: shareable list + summaries + map (no corpus)")
     pk.add_argument("action", choices=["export", "harvest"], help="export a pack / harvest (rebuild) from one")
@@ -174,6 +184,23 @@ def main(argv=None) -> int:
         from .ingest import index_library
         index_library(match=args.match, source=args.source, limit=args.limit,
                       batch=args.batch, verbose=not args.quiet)
+        return 0
+
+    if args.command == "verify":
+        from .index import PassageIndex
+        from .verify import verify_evidence
+        idx = PassageIndex()
+        acquirer = None
+        if args.acquire:
+            import localevidence.server as _srv
+            _srv._INDEX = idx  # _make_acquirer closes over server._INDEX; point it at ours
+            acquirer = _srv._make_acquirer()
+        claim = {"text": args.text, "context": args.context, "topics": args.topic}
+        cit = {"doi": args.doi} if args.doi else None
+        out = verify_evidence(claim, index=idx, citation=cit, k=args.k,
+                              acquire_on_miss=args.acquire, importance=args.importance,
+                              acquirer=acquirer)
+        print(json.dumps(out, indent=2))
         return 0
 
     if args.command == "pack":

@@ -51,6 +51,50 @@ def _boot(verbose: bool = True):
               f"{_LEDGER.stats()['answered']} answered questions", flush=True)
 
 
+# Per-process topic dedupe for acquire-on-miss: one pull serves every card in a
+# topic during a run, so an audit batch never re-pulls the same literature.
+_ACQUIRED_TOPICS: set = set()
+
+
+def _make_acquirer(max_pulls: int = 4, oa_only: bool = True):
+    """An acquire-on-miss function for verify_evidence. Pulls (OA-first, capped)
+    via the ask() acquisition path, refreshes the warm index in place, and reports
+    how many new papers landed. Nightly/unattended use stays OA-only; the shadow
+    tier is reached only when an operator has wired a provider AND passes oa_only
+    False explicitly."""
+    def _acquire(topic: str) -> dict:
+        key = topic.lower().strip()
+        if key in _ACQUIRED_TOPICS:
+            return {"pulled": 0, "topic": topic, "note": "topic already acquired this run"}
+        _ACQUIRED_TOPICS.add(key)
+        before = _INDEX.stats().get("papers", 0)
+        try:
+            from .pipeline import ask as _ask
+            _ask(topic, top_n=max_pulls, oa_only=oa_only, verbose=False)
+        except Exception as e:  # acquisition is best-effort; never break the verify
+            return {"pulled": 0, "topic": topic, "error": str(e)}
+        _INDEX.reload()
+        return {"pulled": max(0, _INDEX.stats().get("papers", 0) - before), "topic": topic}
+    return _acquire
+
+
+def handle_verify(body: dict) -> dict:
+    """Pure-ish entry for POST /api/verify-evidence (also unit-tested directly)."""
+    from . import verify
+    claim = body.get("claim") or {}
+    if not (claim.get("text") or "").strip():
+        return {"error": "empty claim.text"}
+    opts = body.get("options") or {}
+    return verify.verify_evidence(
+        claim, index=_INDEX, citation=body.get("citation"),
+        k=int(opts.get("k", 8)),
+        acquire_on_miss=bool(opts.get("acquire_on_miss", False)),
+        min_confidence=float(opts.get("min_confidence", 0.45)),
+        importance=int(opts.get("importance", 1)),
+        acquirer=_make_acquirer(oa_only=not opts.get("allow_shadow", False))
+        if opts.get("acquire_on_miss") else None)
+
+
 def _queue_question(question: str) -> None:
     QUEUE_PATH.parent.mkdir(parents=True, exist_ok=True)
     with QUEUE_PATH.open("a") as fh:
@@ -105,7 +149,18 @@ class Handler(BaseHTTPRequestHandler):
         path = urlparse(self.path).path
         if path == "/api/ask":
             return self._ask()
+        if path == "/api/verify-evidence":
+            return self._verify()
         self._json({"error": "not found"}, 404)
+
+    def _verify(self):
+        n = int(self.headers.get("Content-Length") or 0)
+        try:
+            body = json.loads(self.rfile.read(n) or b"{}")
+        except json.JSONDecodeError:
+            return self._json({"error": "bad json"}, 400)
+        out = handle_verify(body)
+        return self._json(out, 400 if out.get("error") else 200)
 
     # -- static (the PWA) ----------------------------------------------------
 
