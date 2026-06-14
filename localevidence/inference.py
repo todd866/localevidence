@@ -20,6 +20,9 @@ from typing import Optional, Sequence
 
 DEFAULT_MODEL = os.environ.get("LOCALEVIDENCE_MODEL", "")   # e.g. "ollama:qwen2.5:14b"
 OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+# Local generation can be slow under memory pressure (big model, long prompt). A
+# generous default; override with LOCALEVIDENCE_TIMEOUT for very large models.
+DEFAULT_TIMEOUT = int(os.environ.get("LOCALEVIDENCE_TIMEOUT", "600"))
 
 _SYSTEM = (
     "You are a clinical evidence assistant. Answer the question USING ONLY the "
@@ -46,7 +49,7 @@ def parse_model(spec: Optional[str]) -> tuple[Optional[str], Optional[str]]:
 
 def generate(prompt: str, *, system: Optional[str] = None,
              model: Optional[str] = None, host: Optional[str] = None,
-             timeout: int = 300) -> str:
+             timeout: int = DEFAULT_TIMEOUT) -> str:
     """Generate text from the configured backend. Currently: ollama (local)."""
     backend, name = parse_model(model)
     if backend == "ollama":

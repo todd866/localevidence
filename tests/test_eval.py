@@ -61,6 +61,26 @@ def test_run_eval_empty_retrieval_does_not_crash(monkeypatch):
     assert out["rows"][0]["harness"]["coverage"] == 0.0
 
 
+def test_run_eval_survives_a_model_failure(monkeypatch):
+    # one item's model call blows up (e.g. a timeout); the run must continue and
+    # record the failure, not die — critical for long unattended local runs.
+    from localevidence import inference, harness
+    calls = {"n": 0}
+    def flaky(*a, **k):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise inference.InferenceError("timed out")
+        return "Recovered answer [s1#0]."
+    monkeypatch.setattr(inference, "generate", flaky)
+    monkeypatch.setattr(harness, "expand_queries", lambda q, **k: [])  # keep call count simple
+    passages = [{"id": "s1#0", "paper": "P", "doi": "10/x", "text": "t"}]
+    out = ev.run_eval(["Q1?", "Q2?"], retrieve=lambda q, kk: passages, model="ollama:x")
+    assert len(out["rows"]) == 2
+    assert "error" in out["rows"][0] and "timed out" in out["rows"][0]["error"]
+    assert out["rows"][1].get("answer", "").endswith("[s1#0].")
+    assert out["summary"]["n"] == 1   # only the successful item counts in the summary
+
+
 def test_run_eval_with_mock(monkeypatch):
     from localevidence import harness, inference
     monkeypatch.setattr(inference, "generate",

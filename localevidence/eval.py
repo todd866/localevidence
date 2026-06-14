@@ -93,22 +93,29 @@ def run_eval(items: Sequence[Union[str, dict]], *,
     also the one-shot baseline and rubric-completeness scoring."""
     answer_fn = harness.reasoning_answer if mode == "reasoning" else harness.grounded_answer
     h_results, b_results, h_paired, rows = [], [], [], []
+    _ZERO = {"coverage": 0.0, "hallucinated_citations": 0, "n_grounded": 0, "n_sentences": 0}
     for i, item in enumerate(items):
         q = item["question"] if isinstance(item, dict) else item
         rub = item.get("rubric") if isinstance(item, dict) else None
-        h = answer_fn(q, retrieve=retrieve, model=model, k=k)
-        row = {"id": item.get("id") if isinstance(item, dict) else None,
-               "type": item.get("type") if isinstance(item, dict) else None,
-               "question": q, "answer": h["answer"], "stages": h["stages"],
-               "harness": h["grounding"]}
-        h_results.append(h)
-        if baseline and h["passages"]:
-            b = baseline_answer(q, h["passages"], model=model)
-            row["baseline"] = b["grounding"]
-            b_results.append(b)
-            h_paired.append(h)  # pair: lift compares the SAME items, not all-N vs M
-        if rubric and rub:
-            row["rubric"] = score_rubric(h["answer"], rub, model=model)
+        iid = item.get("id") if isinstance(item, dict) else None
+        itype = item.get("type") if isinstance(item, dict) else None
+        try:
+            # Per-item isolation: a single model timeout/error must not kill a long
+            # unattended local run — record it and carry on.
+            h = answer_fn(q, retrieve=retrieve, model=model, k=k)
+            row = {"id": iid, "type": itype, "question": q, "answer": h["answer"],
+                   "stages": h["stages"], "harness": h["grounding"]}
+            h_results.append(h)
+            if baseline and h["passages"]:
+                b = baseline_answer(q, h["passages"], model=model)
+                row["baseline"] = b["grounding"]
+                b_results.append(b)
+                h_paired.append(h)  # pair: lift compares the SAME items, not all-N vs M
+            if rubric and rub:
+                row["rubric"] = score_rubric(h["answer"], rub, model=model)
+        except Exception as e:  # noqa: BLE001 — resilience is the point
+            row = {"id": iid, "type": itype, "question": q, "error": str(e),
+                   "harness": dict(_ZERO)}
         rows.append(row)
         if on_result:
             on_result(i, row)
