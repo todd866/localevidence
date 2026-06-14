@@ -109,10 +109,26 @@ python3 -m localevidence audit -e 24   # or --project <slug>, --json, --resolve
 ```
 
 Commands: `ask` (the engine), `answer` (write a synthesised answer into the
-ledger), `audit` (provenance + citation-provenance check), `pack` (export/harvest a
-shareable knowledge pack), `queue` (drain the phone queue), `load` (self-play a
-question bank), `guidelines` (harvest CPGs), `serve` (backend + PWA). `--help`
-on each.
+ledger), `audit` (provenance + citation-provenance check), `index-library` (index
+a corpus you already hold), `pack` (export/harvest a shareable knowledge pack),
+`queue` (drain the phone queue), `load` (self-play a question bank), `guidelines`
+(harvest CPGs), `serve` (backend + PWA). `--help` on each.
+
+### Already have a library? Sit LocalEvidence on top of it
+
+LocalEvidence doesn't have to start empty. Its `library` is pluggable — point
+`LOCALEVIDENCE_LIBRARY` at any paper store whose catalog has the expected schema
+(a personal store, a shared one, a harvested pack), then:
+
+```bash
+python3 -m localevidence index-library              # index every full-text paper into retrieval
+python3 -m localevidence index-library --match "amyotrophic|motor neuron"   # or a topic subset
+```
+
+It chunks + embeds the library's papers into the passage index, so retrieval
+covers the **whole corpus you already have**, not just what `ask` fetched. The
+library is the durable store; the passage index is the retrieval layer over it.
+Incremental — already-indexed papers are skipped.
 
 ## Pack: distribute the map, not the corpus
 

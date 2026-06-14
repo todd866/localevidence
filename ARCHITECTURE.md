@@ -261,6 +261,7 @@ acquisition method — ever enters git history.
 7. ✅ serve + offline PWA.
 8. ✅ audit layer (provenance trail + citation-provenance check + verification ceiling).
 8b. ✅ knowledge packs (`pack export`/`harvest`): the shareable list + summaries + map of a corpus, minus the copyrighted PDFs — corpus distributable as a public good (see `docs/PACK.md`).
+8c. ✅ `index-library`: sit LocalEvidence on top of an existing paper store — point `LOCALEVIDENCE_LIBRARY` at it (any catalog with the schema) and index its full-text papers into retrieval, so the engine covers a corpus you already hold, not just its own pulls.
 9. ⬜ citation + claim graphs (the graph maps — designed, not built).
 10. ⬜ CKO condensation layer (cluster → distil → contradiction set).
 11. ⬜ MedCPT reranker + faithfulness gate.

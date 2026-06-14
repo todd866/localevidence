@@ -75,6 +75,12 @@ def main(argv=None) -> int:
     au.add_argument("--json", action="store_true", help="Machine-readable JSON")
     au.add_argument("--resolve", action="store_true", help="Live-check cited DOIs against doi.org (network)")
 
+    il = sub.add_parser("index-library", help="Index an existing library's full-text papers into the passage index (use a corpus you already hold)")
+    il.add_argument("--match", default=None, help="Only papers whose title matches this regex (topic subset)")
+    il.add_argument("--source", default=None, help="Only papers with this catalog source")
+    il.add_argument("--limit", type=int, default=0, help="Index at most N papers")
+    il.add_argument("--quiet", action="store_true")
+
     pk = sub.add_parser("pack", help="Distributable knowledge pack: shareable list + summaries + map (no corpus)")
     pk.add_argument("action", choices=["export", "harvest"], help="export a pack / harvest (rebuild) from one")
     pk.add_argument("dir", help="Pack directory (write for export, read for harvest)")
@@ -161,6 +167,12 @@ def main(argv=None) -> int:
         from .audit import audit_cli
         return audit_cli(entry_id=args.entry, project=args.project,
                          as_json=args.json, resolve=args.resolve)
+
+    if args.command == "index-library":
+        from .ingest import index_library
+        index_library(match=args.match, source=args.source, limit=args.limit,
+                      verbose=not args.quiet)
+        return 0
 
     if args.command == "pack":
         from .pack import export_pack, harvest_pack
