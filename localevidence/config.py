@@ -22,8 +22,7 @@ PROJECTS = ROOT / "projects"
 def load_dotenv(path: Path) -> None:
     """Load KEY=value lines from a gitignored .env into the environment, so an
     operator can keep keys (LOCALEVIDENCE_EMAIL, *_API_KEY, …) in one local file.
-    `setdefault` means a real exported env var always wins; missing file is a no-op.
-    Mirrors how paperscope/shadow.py loads PaperLibrary/.env."""
+    `setdefault` means a real exported env var always wins; missing file is a no-op."""
     if not path.exists():
         return
     for line in path.read_text().splitlines():
