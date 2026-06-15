@@ -102,11 +102,16 @@ model + local inference — then runs on-prem, private, and inspectable, which i
 the strongest substrate for treating the *deployment*, not the model's
 capability, as the safety variable.
 
-**Comparing models (optional, eval only).** The model is a swappable backend, so
-the same grounded question can be put to *any* AI to compare how each handles it:
-`ollama:<name>` (local, free), or — opt-in, with your own key — `anthropic:<model>`
-(`ANTHROPIC_API_KEY`) / `openai:<model>` (`OPENAI_API_KEY`). The paid backends exist
-purely for the cross-model evaluation arm; they don't change the free-local core.
+**Comparing models / sweeping model grades (optional, eval only).** The model is a
+swappable backend, so the same grounded question can be put to *any* AI to compare
+how each handles it: `ollama:<name>` (local, free), or — opt-in, with your own key —
+`anthropic:<model>` / `openai:<model>`, or `openrouter:<provider/model>`
+(`OPENROUTER_API_KEY`). **OpenRouter is the efficient one**: one key reaches ~every
+model, so you can sweep *grades* (`openrouter:qwen/qwen-2.5-72b-instruct`,
+`…/llama-3.3-70b-instruct`, frontier APIs) and **simulate what a local model of that
+size would do without the hardware to run it** — e.g. answering "does a 72B close the
+reasoning gap?" without a 64 GB box. These paid backends are purely for the
+cross-model evaluation arm; the default stack stays free-local / Claude-in-the-loop.
 
 ## Quickstart
 

@@ -64,6 +64,8 @@ def generate(prompt: str, *, system: Optional[str] = None,
         return _anthropic_chat(name, prompt, system, timeout)
     if backend == "openai":
         return _openai_chat(name, prompt, system, timeout)
+    if backend == "openrouter":
+        return _openrouter_chat(name, prompt, system, timeout)
     if backend in (None, "manual", "claude"):
         raise InferenceError(
             "no model backend configured — set LOCALEVIDENCE_MODEL=ollama:<name> "
@@ -119,19 +121,38 @@ def _anthropic_chat(name: Optional[str], prompt: str, system: Optional[str],
     return "".join(parts).strip()
 
 
-def _openai_chat(name: Optional[str], prompt: str, system: Optional[str],
-                 timeout: int) -> str:
+def _openai_style_chat(name: Optional[str], prompt: str, system: Optional[str],
+                       timeout: int, *, url: str, key: str, label: str,
+                       extra_headers: Optional[dict] = None) -> str:
+    """Shared OpenAI-compatible Chat Completions call (OpenAI, OpenRouter, …)."""
     if not name:
-        raise InferenceError("openai backend needs a model, e.g. openai:gpt-4o")
+        raise InferenceError(f"{label} backend needs a model name")
+    messages = ([{"role": "system", "content": system}] if system else []) + \
+        [{"role": "user", "content": prompt}]
+    headers = {"Authorization": f"Bearer {key}", **(extra_headers or {})}
+    data = _post_json(url, headers, {"model": name, "messages": messages}, timeout, label)
+    return ((data.get("choices") or [{}])[0].get("message", {}).get("content") or "").strip()
+
+
+def _openai_chat(name: Optional[str], prompt: str, system: Optional[str], timeout: int) -> str:
     key = os.environ.get("OPENAI_API_KEY")
     if not key:
         raise InferenceError("openai backend needs OPENAI_API_KEY (operator-supplied; eval arm only)")
-    messages = ([{"role": "system", "content": system}] if system else []) + \
-        [{"role": "user", "content": prompt}]
-    data = _post_json("https://api.openai.com/v1/chat/completions",
-                      {"Authorization": f"Bearer {key}"},
-                      {"model": name, "messages": messages}, timeout, "openai")
-    return ((data.get("choices") or [{}])[0].get("message", {}).get("content") or "").strip()
+    return _openai_style_chat(name, prompt, system, timeout,
+                              url="https://api.openai.com/v1/chat/completions", key=key, label="openai")
+
+
+def _openrouter_chat(name: Optional[str], prompt: str, system: Optional[str], timeout: int) -> str:
+    # One key, ~every model (Claude/GPT/Llama/Qwen/…) — the efficient way to sweep
+    # model GRADES (e.g. openrouter:qwen/qwen-2.5-72b-instruct) and simulate what a
+    # local model of that size/family would do, without the hardware to run it.
+    key = os.environ.get("OPENROUTER_API_KEY")
+    if not key:
+        raise InferenceError("openrouter backend needs OPENROUTER_API_KEY (operator-supplied; "
+                             "one key, many models — e.g. openrouter:qwen/qwen-2.5-72b-instruct)")
+    return _openai_style_chat(name, prompt, system, timeout,
+                              url="https://openrouter.ai/api/v1/chat/completions", key=key,
+                              label="openrouter", extra_headers={"X-Title": "LocalEvidence"})
 
 
 def _format_passages(passages: Sequence[dict]) -> str:

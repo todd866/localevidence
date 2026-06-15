@@ -90,6 +90,29 @@ def test_openai_missing_key(monkeypatch):
         inference.generate("Q?", model="openai:gpt-4o")
 
 
+def test_openrouter_backend(monkeypatch):
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-test")
+    cap = {}
+    def fake_urlopen(req, timeout=0):
+        cap["url"] = req.full_url
+        cap["auth"] = req.get_header("Authorization")
+        cap["body"] = json.loads(req.data)
+        return _FakeResp({"choices": [{"message": {"content": "router reply"}}]})
+    monkeypatch.setattr(inference.urllib.request, "urlopen", fake_urlopen)
+    # provider/model name (with a slash) must survive parse_model
+    out = inference.generate("Q?", model="openrouter:qwen/qwen-2.5-72b-instruct")
+    assert out == "router reply"
+    assert "openrouter.ai/api/v1/chat/completions" in cap["url"]
+    assert cap["auth"] == "Bearer sk-or-test"
+    assert cap["body"]["model"] == "qwen/qwen-2.5-72b-instruct"
+
+
+def test_openrouter_missing_key(monkeypatch):
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    with pytest.raises(inference.InferenceError):
+        inference.generate("Q?", model="openrouter:anthropic/claude-3.5-sonnet")
+
+
 def test_format_passages_numbers_and_cites():
     txt = inference._format_passages(
         [{"id": "s1#3", "paper": "Paper One", "doi": "10.1/x", "text": "the dose is 50 mg/kg"}])
