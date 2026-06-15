@@ -97,6 +97,7 @@ def main(argv=None) -> int:
     sy.add_argument("--model", default=None, help="Model spec e.g. ollama:qwen2.5:14b (or set LOCALEVIDENCE_MODEL)")
     sy.add_argument("-k", "--passages", type=int, default=8, help="Passages to ground in")
     sy.add_argument("--harness", action="store_true", help="Full multi-stage harness (expand->draft->critique->revise->verify), not one-shot")
+    sy.add_argument("--safe", action="store_true", help="Defence-in-depth: triage->inject safety rules->reason->safety-critic->abstain on unresolved critical risk")
     sy.add_argument("--show-grounding", action="store_true", help="Print the grounding report (harness mode)")
 
     el = sub.add_parser("eval-local", help="Long-form eval: run the grounded harness over many questions on-device and score grounding (+ rubric completeness)")
@@ -104,7 +105,7 @@ def main(argv=None) -> int:
     el.add_argument("--vignettes", default=None, help="JSON file of vignette dicts with question/rubric/type/id")
     el.add_argument("--model", default=None, help="Model spec e.g. ollama:qwen2.5:14b")
     el.add_argument("-k", "--passages", type=int, default=8)
-    el.add_argument("--mode", default="grounded", choices=["grounded", "reasoning"], help="grounded (retrieval) or reasoning (scaffolded, for management/judgment/epi)")
+    el.add_argument("--mode", default="grounded", choices=["grounded", "reasoning", "safe"], help="grounded (retrieval) / reasoning (scaffolded) / safe (defence-in-depth: rule-injection + safety-critic + abstain)")
     el.add_argument("--baseline", action="store_true", help="Also run the one-shot control to isolate the harness lift")
     el.add_argument("--rubric", action="store_true", help="Score rubric completeness (needs --vignettes with rubrics)")
     el.add_argument("--limit", type=int, default=0, help="Run at most N items")
@@ -229,7 +230,19 @@ def main(argv=None) -> int:
         idx = PassageIndex()
         retrieve = lambda query, k: [_passage_view(p) for p in idx.search(query, k=k)]
         try:
-            if args.harness:
+            if args.safe:
+                from .harness import reasoning_answer
+                from .safety import guarded_answer
+                out = guarded_answer(q, retrieve=retrieve, answer_fn=reasoning_answer,
+                                     model=args.model, k=args.passages)
+                if out["disposition"] != "served" and out.get("safety_note"):
+                    print(f"⚠ [{out['disposition'].upper()}] {out['safety_note']}\n")
+                print(out["answer"])
+                vio = "; ".join(v["check"] for v in out["violations"]) or "none"
+                print(f"\n— {out['model']} · tier={out['tier']} · disposition={out['disposition']}"
+                      f"\n  rules: {', '.join(out['rules_applied']) or 'none'}"
+                      f"\n  unresolved flags: {vio}", file=sys.stderr)
+            elif args.harness:
                 from .harness import grounded_answer
                 out = grounded_answer(q, retrieve=retrieve, model=args.model, k=args.passages)
                 print(out["answer"])

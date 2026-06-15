@@ -123,8 +123,9 @@ def frame(question: str, *, model: Optional[str] = None) -> str:
 
 
 def reasoned_draft(question: str, frame_text: str, passages: Sequence[dict], *,
-                   model: Optional[str] = None) -> str:
-    prompt = (f"Question: {question}\n\nReasoning frame to follow:\n{frame_text}\n\n"
+                   model: Optional[str] = None, constraints: str = "") -> str:
+    head = (constraints + "\n\n") if constraints else ""
+    prompt = (f"{head}Question: {question}\n\nReasoning frame to follow:\n{frame_text}\n\n"
               f"Evidence passages (cite factual claims with [slug#n]):\n"
               f"{inference._format_passages(passages)}\n\n"
               "Write the answer, following the frame.")
@@ -143,9 +144,11 @@ def safety_check(question: str, answer: str, *, model: Optional[str] = None) -> 
 
 def reasoning_answer(question: str, *,
                      retrieve: Callable[[str, int], list[dict]],
-                     model: Optional[str] = None, k: int = 8) -> dict:
+                     model: Optional[str] = None, k: int = 8,
+                     constraints: str = "") -> dict:
     """Scaffolded reasoning loop: frame -> retrieve -> reasoned draft -> safety
-    self-check -> revise -> verify. Returns the answer + full stages."""
+    self-check -> revise -> verify. `constraints` (e.g. injected safety rules) are
+    carried through the draft and revise prompts. Returns the answer + full stages."""
     stages = ["frame"]
     fr = frame(question, model=model)
     passages = list(retrieve(question, k))
@@ -153,13 +156,14 @@ def reasoning_answer(question: str, *,
     if not passages:
         # reasoning can still proceed with no corpus support; note it
         passages = []
-    draft = reasoned_draft(question, fr, passages, model=model)
+    draft = reasoned_draft(question, fr, passages, model=model, constraints=constraints)
     stages.append("draft")
     answer = draft
     chk = safety_check(question, draft, model=model)
     stages.append("safety-check")
     if chk.strip().upper() != "OK":
-        prompt = (f"Question: {question}\n\nDraft:\n{draft}\n\n"
+        head = (constraints + "\n\n") if constraints else ""
+        prompt = (f"{head}Question: {question}\n\nDraft:\n{draft}\n\n"
                   f"Safety/completeness gaps to fix:\n{chk}\n\n"
                   f"Evidence passages:\n{inference._format_passages(passages)}\n\n"
                   "Rewrite the answer to fix EVERY gap: address the most dangerous possibility "

@@ -91,7 +91,15 @@ def run_eval(items: Sequence[Union[str, dict]], *,
     `question`/`rubric`/`type`/`id`). mode='grounded' (citation-optimised, for
     retrieval) or 'reasoning' (scaffolded, for management/judgment/epi). Optionally
     also the one-shot baseline and rubric-completeness scoring."""
-    answer_fn = harness.reasoning_answer if mode == "reasoning" else harness.grounded_answer
+    if mode == "safe":
+        from . import safety
+        def answer_fn(q, *, retrieve, model=None, k=8):
+            return safety.guarded_answer(q, retrieve=retrieve,
+                                         answer_fn=harness.reasoning_answer, model=model, k=k)
+    elif mode == "reasoning":
+        answer_fn = harness.reasoning_answer
+    else:
+        answer_fn = harness.grounded_answer
     h_results, b_results, h_paired, rows = [], [], [], []
     _ZERO = {"coverage": 0.0, "hallucinated_citations": 0, "n_grounded": 0, "n_sentences": 0}
     for i, item in enumerate(items):
@@ -105,6 +113,10 @@ def run_eval(items: Sequence[Union[str, dict]], *,
             h = answer_fn(q, retrieve=retrieve, model=model, k=k)
             row = {"id": iid, "type": itype, "question": q, "answer": h["answer"],
                    "stages": h["stages"], "harness": h["grounding"]}
+            if "disposition" in h:  # safe mode: record the guardrail outcome
+                row["disposition"] = h["disposition"]
+                row["rules_applied"] = h.get("rules_applied")
+                row["violations"] = h.get("violations")
             h_results.append(h)
             if baseline and h["passages"]:
                 b = baseline_answer(q, h["passages"], model=model)

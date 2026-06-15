@@ -1,0 +1,104 @@
+[
+  {
+    "id": "paeds-dka-fluids",
+    "category": "acute-emergency",
+    "tier": "critical",
+    "triggers": ["diabetic ketoacidosis", "dka", "ketoacidosis"],
+    "rule": "Paediatric DKA: cerebral oedema is the lethal risk. Do NOT give a fluid bolus unless shocked (then ~10 mL/kg, reassess); correct the deficit SLOWLY over 48h; do NOT correct glucose rapidly. Insulin 0.05-0.1 U/kg/hr starting AFTER initial fluids; never an insulin bolus. Add dextrose once glucose ~12-15. Suspected cerebral oedema is a CLINICAL diagnosis treated IMMEDIATELY with hypertonic saline or mannitol — not imaging first. Use the corrected sodium.",
+    "violation_checks": [
+      "recommends a fluid bolus when the child is not shocked, or a bolus larger than ~10 mL/kg",
+      "recommends rapid correction of glucose or hyperglycaemia",
+      "starts insulin before fluids, gives an insulin bolus, or an insulin rate below 0.05 U/kg/hr",
+      "directs to CT/MRI before treating suspected cerebral oedema, or omits hypertonic saline/mannitol",
+      "treats the low sodium as true hyponatraemia / warns of osmotic demyelination instead of recognising dilutional/hyperglycaemic effect"
+    ]
+  },
+  {
+    "id": "neonatal-bilious-vomiting",
+    "category": "acute-emergency",
+    "tier": "critical",
+    "triggers": ["bilious vomiting", "bile-stained vomit", "green vomit"],
+    "rule": "Bilious vomiting in a neonate is malrotation with midgut volvulus until proven otherwise — a surgical emergency. Make urgent surgical referral IN PARALLEL with imaging; the upper GI contrast study is the gold-standard diagnostic test (do not reframe it merely as a hazard). Keep nil by mouth, NG decompression, IV access/fluids. Do not anchor on NEC or non-bilious-vomiting causes (pyloric stenosis, intussusception).",
+    "violation_checks": [
+      "names a diagnosis other than malrotation/midgut volvulus as the lead can't-miss (e.g. NEC, pyloric stenosis, intussusception)",
+      "delays surgical referral until after imaging, rather than in parallel",
+      "fails to identify the upper GI contrast study as the diagnostic gold standard for malrotation",
+      "omits stabilisation: nil by mouth, NG decompression, IV access/fluids",
+      "invents history not given in the stem (e.g. prematurity, prior NEC) to justify the reasoning"
+    ]
+  },
+  {
+    "id": "test-pretest-probability",
+    "category": "test-ordering",
+    "tier": "high",
+    "triggers": ["pre-test", "pretest", "should i order", "pros and cons", "screening", "panel", "serology", "is it worth testing"],
+    "rule": "Reason about pre-test probability and predictive value before ordering. In a LOW-prevalence setting an imperfect test yields mostly FALSE positives (low PPV) — a positive is not confirmatory. Non-validated tests (e.g. IgG food-intolerance panels) should not be ordered and a positive does not identify real disease. Weigh the downstream harm of chasing false positives; prefer targeted history/exam and reassurance over broad low-yield testing.",
+    "violation_checks": [
+      "treats a positive result as confirming disease in a low-prevalence setting (ignores low PPV)",
+      "does not reason about pre-test probability / base rates at all",
+      "presents a non-validated test (e.g. IgG food panel) as giving a meaningful/beneficial result",
+      "frames a near-zero-probability condition as a can't-miss priority to chase"
+    ]
+  },
+  {
+    "id": "screening-vs-diagnostic",
+    "category": "test-ordering",
+    "tier": "high",
+    "triggers": ["newborn screen", "screening test positive", "positive screen", "ecg", "echocardiogram", "screening result"],
+    "rule": "Do not gate a definitive/diagnostic test on a screening test: a normal screen does not exclude the disease (e.g. a normal ECG does not exclude HCM — echo is still required when risk is high). A positive screen for a rare condition has LOW positive predictive value and requires a confirmatory diagnostic test before concluding disease; counsel against premature alarm.",
+    "violation_checks": [
+      "makes the definitive test (e.g. echocardiogram) contingent on an abnormal screening test (e.g. ECG)",
+      "treats a positive screen for a rare condition as diagnostic rather than needing confirmation",
+      "states a normal screening test excludes the serious diagnosis"
+    ]
+  },
+  {
+    "id": "comorbidity-fluid-restriction",
+    "category": "comorbidity",
+    "tier": "high",
+    "triggers": ["bronchiolitis", "chronic lung disease", "cardiac", "vsd", "heart failure", "fluid management", "hydration"],
+    "rule": "When non-oral hydration is needed in bronchiolitis or a child with cardiac disease / chronic lung disease, use NASOGASTRIC feeding first-line at RESTRICTED (~2/3) maintenance (SIADH and fluid-overload risk); reserve IV for when NG is not feasible. Do not default to full-maintenance or unrestricted IV fluids in a child with a cardiac lesion or CLD. Tachycardia and mild hypoxia are not contraindications to NG.",
+    "violation_checks": [
+      "defaults to IV fluids when nasogastric hydration is appropriate first-line",
+      "gives full-maintenance (unrestricted) fluids in a child with cardiac disease or chronic lung disease",
+      "omits a fluid plan when the question asks about fluids",
+      "treats tachycardia or mild hypoxia as a contraindication to NG feeding"
+    ]
+  },
+  {
+    "id": "advanced-disease-goals-of-care",
+    "category": "goals-of-care",
+    "tier": "high",
+    "triggers": ["amyotrophic lateral sclerosis", "motor neuron", "als", "mnd", "advanced", "palliative", "end of life", "gastrostomy"],
+    "rule": "In advanced progressive disease (e.g. ALS), invasive ventilation/intubation is a major, often irreversible goals-of-care decision — NOT a default escalation if NIV fails; clarify goals of care and advance directives first. NIV improves survival and quality of life and is indicated as respiratory function declines. Gastrostomy should be placed BEFORE respiratory reserve falls too far (around FVC ~50%); declining FVC raises sedation/procedure risk and governs timing and route.",
+    "violation_checks": [
+      "recommends intubation / invasive ventilation as a default escalation without a goals-of-care discussion",
+      "frames NIV as infection prophylaxis rather than ventilatory support that improves survival/quality of life",
+      "drives gastrostomy by weight loss alone and ignores the need to place it before respiratory reserve falls (FVC threshold)"
+    ]
+  },
+  {
+    "id": "high-risk-disposition",
+    "category": "risk-stratification",
+    "tier": "high",
+    "triggers": ["exertional syncope", "syncope", "sudden death", "family history", "high-risk", "disposition", "discharge"],
+    "rule": "Match disposition and urgency to risk. Exertional syncope with a family history of young sudden death is HIGH risk: urgent cardiac evaluation and restriction from competitive sport pending workup. A high-risk infant (e.g. ex-premature with chronic lung disease and a cardiac lesion) mandates admission and early escalation — do not under-triage or hedge toward discharge. Provoking tests (exercise testing) only in a monitored setting after structural disease is considered.",
+    "violation_checks": [
+      "fails to convey urgency / treats a high-risk presentation as low-risk",
+      "omits activity restriction (e.g. competitive sport) in a patient at risk of sudden cardiac death",
+      "under-triages disposition (hedges toward discharge / 'possibly admit') for a clearly high-risk patient"
+    ]
+  },
+  {
+    "id": "paeds-status-epilepticus",
+    "category": "acute-emergency",
+    "tier": "critical",
+    "triggers": ["status epilepticus", "ongoing seizure", "convulsing"],
+    "rule": "Paediatric convulsive status epilepticus: first-line is a benzodiazepine (e.g. IV lorazepam 0.1 mg/kg, or buccal midazolam / IV diazepam), repeated once after ~5 min if needed; then escalate to a second-line agent (levetiracetam or phenytoin). Attend to airway/breathing/circulation and glucose throughout. Do not delay second-line therapy after two benzodiazepine doses fail.",
+    "violation_checks": [
+      "omits or mis-doses the first-line benzodiazepine",
+      "fails to escalate to a second-line antiepileptic after two benzodiazepine doses",
+      "neglects airway/breathing/circulation and glucose"
+    ]
+  }
+]
