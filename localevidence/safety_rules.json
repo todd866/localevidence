@@ -44,7 +44,8 @@
     "id": "screening-vs-diagnostic",
     "category": "test-ordering",
     "tier": "high",
-    "triggers": ["newborn screen", "screening test positive", "positive screen", "ecg", "echocardiogram", "screening result"],
+    "triggers": ["newborn screen", "positive screen", "screening test"],
+    "cue": "interpreting a screening test result vs a diagnostic test; a normal screen does not exclude disease and a positive screen for a rare condition needs confirmation",
     "rule": "Do not gate a definitive/diagnostic test on a screening test: a normal screen does not exclude the disease (e.g. a normal ECG does not exclude HCM — echo is still required when risk is high). A positive screen for a rare condition has LOW positive predictive value and requires a confirmatory diagnostic test before concluding disease; counsel against premature alarm.",
     "violation_checks": [
       "makes the definitive test (e.g. echocardiogram) contingent on an abnormal screening test (e.g. ECG)",
@@ -56,7 +57,8 @@
     "id": "comorbidity-fluid-restriction",
     "category": "comorbidity",
     "tier": "high",
-    "triggers": ["bronchiolitis", "chronic lung disease", "cardiac", "vsd", "heart failure", "fluid management", "hydration"],
+    "triggers": ["bronchiolitis", "chronic lung disease", "bronchopulmonary dysplasia"],
+    "cue": "intravenous vs nasogastric fluid/hydration management in an infant or child with a cardiac lesion or chronic lung disease; fluid restriction",
     "rule": "When non-oral hydration is needed in bronchiolitis or a child with cardiac disease / chronic lung disease, use NASOGASTRIC feeding first-line at RESTRICTED (~2/3) maintenance (SIADH and fluid-overload risk); reserve IV for when NG is not feasible. Do not default to full-maintenance or unrestricted IV fluids in a child with a cardiac lesion or CLD. Tachycardia and mild hypoxia are not contraindications to NG.",
     "violation_checks": [
       "defaults to IV fluids when nasogastric hydration is appropriate first-line",
@@ -69,7 +71,8 @@
     "id": "advanced-disease-goals-of-care",
     "category": "goals-of-care",
     "tier": "high",
-    "triggers": ["amyotrophic lateral sclerosis", "motor neuron", "als", "mnd", "advanced", "palliative", "end of life", "gastrostomy"],
+    "triggers": ["amyotrophic lateral sclerosis", "motor neuron disease", "gastrostomy"],
+    "cue": "goals of care and ventilation/feeding decisions in advanced progressive neuromuscular disease (e.g. ALS/MND): NIV, gastrostomy timing, avoid default intubation",
     "rule": "In advanced progressive disease (e.g. ALS), invasive ventilation/intubation is a major, often irreversible goals-of-care decision — NOT a default escalation if NIV fails; clarify goals of care and advance directives first. NIV improves survival and quality of life and is indicated as respiratory function declines. Gastrostomy should be placed BEFORE respiratory reserve falls too far (around FVC ~50%); declining FVC raises sedation/procedure risk and governs timing and route.",
     "violation_checks": [
       "recommends intubation / invasive ventilation as a default escalation without a goals-of-care discussion",

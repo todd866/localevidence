@@ -1,0 +1,19 @@
+[
+  {"id": "inr-target-mech-valve", "expected": "factual-lookup", "question": "What is the target INR range for a patient with a mechanical mitral valve?"},
+  {"id": "paracetamol-max-dose", "expected": "factual-lookup", "question": "What is the maximum daily paracetamol dose for an adult?"},
+  {"id": "curb65-criteria", "expected": "factual-lookup", "question": "What are the CURB-65 criteria for pneumonia severity?"},
+  {"id": "amiodarone-halflife", "expected": "factual-lookup", "question": "What is the approximate half-life of amiodarone?"},
+  {"id": "cellulitis-firstline", "expected": "factual-lookup", "question": "What is the guideline first-line oral antibiotic for uncomplicated cellulitis?"},
+  {"id": "aki-kdigo-definition", "expected": "factual-lookup", "question": "What is the KDIGO definition of acute kidney injury?"},
+  {"id": "dapagliflozin-moa", "expected": "factual-lookup", "question": "What is the mechanism of action of dapagliflozin?"},
+  {"id": "anaphylaxis-adult-dose", "expected": "factual-lookup", "question": "What is the standard adult IM adrenaline dose for anaphylaxis?"},
+
+  {"id": "anticoag-af-falls", "expected": "reasoning", "question": "Should I anticoagulate an 84-year-old with atrial fibrillation and recurrent falls?"},
+  {"id": "ddimer-low-wells", "expected": "reasoning", "question": "Is it worth ordering a D-dimer in this patient with a Wells score of 1?"},
+  {"id": "cellulitis-penicillin-allergy-ckd", "expected": "reasoning", "question": "How should I manage cellulitis in a penicillin-allergic patient with stage 4 chronic kidney disease?"},
+  {"id": "septic-shock-judgement", "expected": "reasoning", "question": "This patient has a lactate of 3 and suspected infection — do they meet septic shock criteria and what should I do now?"},
+  {"id": "ana-positive-well-patient", "expected": "reasoning", "question": "A positive ANA came back in a well patient with vague fatigue — what does it mean and should I act on it?"},
+  {"id": "hyponatremia-correction-speed", "expected": "reasoning", "question": "How fast should I correct the sodium in an alcohol-dependent patient who presents with a sodium of 110?"},
+  {"id": "statin-frail-elderly", "expected": "reasoning", "question": "Should I start a statin for primary prevention in a frail 88-year-old with metastatic cancer?"},
+  {"id": "warfarin-high-inr-no-bleed", "expected": "reasoning", "question": "My patient on warfarin has an INR of 5.5 with no bleeding — how should I manage it?"}
+]

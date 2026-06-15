@@ -29,10 +29,35 @@ def load_catalogue(path: Optional[Path] = None) -> list[dict]:
     return json.loads((path or _RULES_PATH).read_text())
 
 
-def match_rules(question: str, catalogue: Sequence[dict]) -> list[dict]:
-    """Deterministic trigger match: which landmines apply to this question."""
+def _rule_cue(r: dict) -> str:
+    return r.get("cue") or (f"{r.get('category', '')}: "
+                            f"{' '.join(r.get('triggers', [])[:6])}. {r.get('rule', '')[:140]}")
+
+
+def _default_embedder(texts):
+    from .embedding import embed
+    return embed(texts)
+
+
+def match_rules(question: str, catalogue: Sequence[dict], *, semantic: bool = True,
+                embedder: Optional[Callable] = None, threshold: float = 0.45) -> list[dict]:
+    """Which landmines apply. Keyword triggers (precise) UNION semantic cue-match
+    (catches paraphrase / related conditions that brittle keywords missed). Semantic
+    is best-effort — if embedding fails, keyword match still stands. Over-matching
+    here is benign: the safety-critic just runs an extra rule's checks (mostly NO)."""
     q = question.lower()
-    return [r for r in catalogue if any(t.lower() in q for t in r.get("triggers", []))]
+    hit_ids = {r["id"] for r in catalogue if any(t.lower() in q for t in r.get("triggers", []))}
+    if semantic:
+        try:
+            import numpy as np
+            emb = embedder or _default_embedder
+            qv = np.asarray(emb([question])[0])
+            cv = np.asarray(emb([_rule_cue(r) for r in catalogue]))
+            sims = (cv @ qv).tolist()
+            hit_ids |= {catalogue[i]["id"] for i in range(len(catalogue)) if sims[i] >= threshold}
+        except Exception:
+            pass
+    return [r for r in catalogue if r["id"] in hit_ids]  # catalogue order
 
 
 def tier_of(rules: Sequence[dict]) -> str:

@@ -50,6 +50,11 @@ _CLASSIFY = (
     "- test-ordering: whether or which test to order, or its pros/cons in a patient.\n"
     "- epidemiological: base rates, pre-test probability, or predictive-value reasoning.\n"
     "- emergency: acute, time-critical management.\n"
+    "IMPORTANT: interpreting a SPECIFIC patient's test result, or any 'what does this "
+    "mean for this patient / should I act / should I order / should I treat / should I "
+    "start' question, is REASONING (not factual-lookup) even if it sounds like a lookup. "
+    "factual-lookup is ONLY a context-free fact (a dose, a definition, a criterion, a "
+    "mechanism) with no specific patient to judge.\n"
     "When in doubt between factual-lookup and anything else, choose the OTHER (reasoning) "
     "class. Reply with only the label.\n\nQuestion: ")
 

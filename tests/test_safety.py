@@ -12,12 +12,33 @@ CAT = [
 ]
 
 
-def test_match_rules_and_tier():
-    r = safety.match_rules("Manage this child's DKA please", CAT)
+def test_match_rules_keyword_and_tier():
+    r = safety.match_rules("Manage this child's DKA please", CAT, semantic=False)
     assert [x["id"] for x in r] == ["dka"]
     assert safety.tier_of(r) == "critical"
-    assert safety.match_rules("how do I treat a sore throat", CAT) == []
+    assert safety.match_rules("how do I treat a sore throat", CAT, semantic=False) == []
     assert safety.tier_of([]) == "standard"
+
+
+def test_match_rules_semantic_catches_paraphrase():
+    # fake embedder: 'ketoacidosis'/'dka' -> axis 0, else axis 1 — so a paraphrase
+    # with no literal trigger still matches the DKA rule's cue semantically.
+    import numpy as np
+    def fake_emb(texts):
+        def vec(t):
+            t = t.lower()
+            if "ketoacid" in t or "dka" in t:
+                return [1.0, 0.0, 0.0]
+            if "constipation" in t or "axr" in t:
+                return [0.0, 1.0, 0.0]
+            return [0.0, 0.0, 1.0]
+        return np.array([vec(t) for t in texts])
+    # 'ketoacidosis' is NOT a literal trigger of CAT['dka'] (triggers: dka / diabetic ketoacidosis)
+    q = "child with severe ketoacid crisis, what fluids"
+    r = safety.match_rules(q, CAT, embedder=fake_emb, threshold=0.9)
+    assert "dka" in [x["id"] for x in r]
+    # an unrelated question matches nothing
+    assert safety.match_rules("ankle sprain advice", CAT, embedder=fake_emb, threshold=0.9) == []
 
 
 def test_rules_constraint_text_lists_rules():
