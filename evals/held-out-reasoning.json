@@ -1,0 +1,194 @@
+[
+ {
+  "id": "cardiology-afib-cirrhosis-anticoagulation",
+  "type": "management",
+  "question": "A 67-year-old man with new persistent atrial fibrillation (CHA2DS2-VASc score 4: hypertension, diabetes, age, male) is referred for stroke-prevention decision-making. He also has Child-Pugh B alcohol-related cirrhosis with a prior variceal bleed treated with banding 8 months ago, platelets of 78 x10^9/L, INR 1.6 (baseline, from synthetic dysfunction not anticoagulation), and oesophageal varices on recent endoscopy. His HAS-BLED score is elevated. He asks whether he should start a blood thinner and which one. How do you approach anticoagulation decision-making in this patient, and what is your recommendation?",
+  "rubric": [
+   "Recognise that a high CHA2DS2-VASc indicates genuine stroke risk so the decision is a bleed-vs-stroke trade-off, not a reflexive 'too high-risk to anticoagulate'",
+   "Note that the baseline elevated INR reflects hepatic synthetic dysfunction and does NOT confer auto-anticoagulation or reliably predict bleeding; INR is not a valid DOAC monitoring tool",
+   "Address Child-Pugh B as a relative/strong caution for DOACs (apixaban least hepatically cleared; rivaroxaban contraindicated in Child-Pugh B/C; warfarin hard to manage with unstable baseline INR and variceal risk)",
+   "Mandate variceal risk reduction BEFORE/alongside anticoagulation (non-selective beta-blocker, repeat banding/eradication, PPI) and treat the modifiable bleeding risk rather than using HAS-BLED to withhold therapy",
+   "Discuss left atrial appendage occlusion as a legitimate alternative given the unusually high and partly non-modifiable bleeding risk",
+   "Frame as shared decision-making with explicit patient values, alcohol cessation, and a plan for reassessment rather than a one-time binary choice"
+  ],
+  "rule_category": "comorbidity",
+  "specific_condition": "atrial fibrillation with decompensated cirrhosis and variceal bleeding risk",
+  "domain": "adult cardiology"
+ },
+ {
+  "id": "cardiology-stable-chest-pain-ctca-vs-functional",
+  "type": "test-decision",
+  "question": "A 58-year-old woman with hypertension and a 20 pack-year smoking history presents with 3 months of exertional chest tightness relieved by rest, with no rest pain and a normal ECG and troponin. Her pre-test probability of obstructive coronary disease is intermediate (roughly 15-30%). The cardiology trainee wants to send her straight for invasive coronary angiography; the GP suggests an exercise ECG. You must choose the initial diagnostic test. Walk through the pros and cons of CT coronary angiography versus a functional/stress imaging test versus invasive angiography for this patient, and justify your choice.",
+  "rubric": [
+   "Identify that this is stable suspected angina at intermediate pre-test probability, where guidelines (e.g. NICE/ESC) favour CT coronary angiography as the first-line anatomical test",
+   "Argue against straight-to-invasive angiography: it is not first-line for intermediate-risk stable patients, carries procedural risk (vascular, contrast, radiation) and risks oculostenotic reflex / unnecessary PCI without ischaemia data",
+   "Critique plain exercise ECG: poor diagnostic accuracy especially in women, no imaging, and it does not localise or quantify ischaemia; largely superseded",
+   "Discuss CTCA strengths (high negative predictive value to rule out CAD, plaque burden, prognostic info) and limitations (calcium blooming, need for rate control/beta-blocker, contrast/renal, less useful if heavy calcification)",
+   "Discuss when functional/stress imaging (stress echo, SPECT/PET, stress CMR) is preferred \u2014 to assess ischaemic significance of known stenosis, in heavy calcification, or when revascularisation hinges on demonstrable ischaemia",
+   "State a justified choice (CTCA first-line here) and the downstream pathway including how the result would change management (medical therapy vs functional testing vs invasive with FFR)"
+  ],
+  "rule_category": "test-ordering",
+  "specific_condition": "stable suspected angina / chest pain investigation pathway",
+  "domain": "adult cardiology"
+ },
+ {
+  "id": "neph-hyponatremia-correction-rate-thiazide-alcohol",
+  "type": "management",
+  "question": "A 58-year-old woman with a history of alcohol use disorder (currently drinking ~6 standard drinks/day, poor oral intake) is brought in confused after 3 days of a thiazide diuretic newly started for hypertension. She is not seizing. Serum sodium is 108 mmol/L, K 2.9, urine osmolality 95 mOsm/kg, urine sodium 12 mmol/L. She appears mildly volume-depleted. Walk through your management over the first 24-48 hours: how fast (and to what target) you correct the sodium, what fluid/agent you use, what you monitor, and how you would respond if her sodium started rising faster than intended.",
+  "rubric": [
+   "Recognises this patient is at HIGH risk for osmotic demyelination syndrome (sodium <120, alcohol use, malnutrition, hypokalaemia) and therefore sets a conservative correction limit (\u22486-8 mmol/L per 24h, with some advocating \u22646 in high-risk patients)",
+   "Identifies the likely mechanism as a self-correcting/'autocorrection' setup: once thiazide stopped and volume repleted, ADH suppression causes brisk aquaresis and dangerous overcorrection (dilute urine osm 95 already signals this risk)",
+   "Specifies cautious volume resuscitation (isotonic saline) plus stopping the thiazide; reserves hypertonic 3% saline boluses for severe symptoms (seizure/coma), not routine here given no seizure",
+   "Emphasises concurrent potassium repletion AND counts K replacement toward sodium rise (giving K raises serum Na), so it must be factored into the correction budget",
+   "Specifies frequent Na monitoring (e.g. q2-4h initially) and pre-specifies a rescue plan for overcorrection: desmopressin (DDAVP) to clamp aquaresis and/or free water (D5W) to re-lower sodium back under the 24h limit",
+   "Addresses thiamine before/with glucose-containing fluids to avoid precipitating Wernicke in this alcohol-dependent malnourished patient"
+  ],
+  "rule_category": "acute-emergency",
+  "specific_condition": "severe hyponatremia (thiazide + beer-potomania/low-solute) with high osmotic demyelination risk",
+  "domain": "nephrology & electrolyte emergencies"
+ },
+ {
+  "id": "neph-dialysis-initiation-goals-of-care-frail-ckd",
+  "type": "management",
+  "question": "An 84-year-old man with CKD stage 5 (eGFR 8), heart failure, mild dementia, and frailty (clinical frailty scale 6, falls, lives with his daughter) is referred for 'planning of dialysis access.' He is not uraemic-symptomatic yet, eGFR is declining ~2-3/year, K 5.4, no acidosis crisis, no fluid overload today. His daughter expects dialysis 'will keep him going.' He says he 'doesn't want to be a burden' and 'hates hospitals.' How would you approach the decision about whether and when to start dialysis in this man, and what would you recommend?",
+  "rubric": [
+   "Recognises that in elderly frail patients with high comorbidity, dialysis often does NOT confer a clear survival advantage over conservative/maximal supportive (medical) management, and can reduce functional status and increase hospital/care-home time",
+   "Frames this explicitly as a goals-of-care / shared-decision conversation eliciting the patient's own values and what matters to him (home, independence, avoiding hospital), not a reflexive technical decision driven by eGFR threshold",
+   "Avoids starting dialysis purely on a numeric eGFR/potassium trigger in the absence of refractory symptoms; notes that conservative management with active symptom control is a legitimate, guideline-endorsed pathway (not 'doing nothing')",
+   "Identifies and manages the family/patient information gap and potential conflict: daughter's expectations vs patient's expressed preferences; assesses his decision-making capacity given mild dementia",
+   "Outlines what conservative management actually involves (BP/anaemia/potassium/fluid/symptom management, advance care planning, palliative input) and sets criteria that would still prompt reconsidering time-limited dialysis",
+   "Addresses prognostication honestly (e.g. surprise question, frailty-adjusted survival) and avoids overstating dialysis benefit to obtain consent"
+  ],
+  "rule_category": "goals-of-care",
+  "specific_condition": "dialysis initiation decision in frail elderly CKD stage 5 with conservative-management option",
+  "domain": "nephrology & electrolyte emergencies"
+ },
+ {
+  "id": "id-sepsis-neutropenic-fever-empiric-coverage",
+  "type": "management",
+  "question": "A 58-year-old man is on day 9 after induction chemotherapy for AML. He presents febrile to 38.9\u00b0C, HR 118, BP 96/58, RR 22. ANC is 0.1 x10^9/L. He has a tunnelled central line in situ, mild perianal tenderness, and no localizing respiratory or urinary symptoms. He received a beta-lactam 3 weeks ago for a prior febrile episode with no organism identified. He has a documented penicillin allergy recorded in childhood as 'a rash'. Lactate is 2.6 mmol/L. Walk through your initial assessment and the empiric antimicrobial regimen you would start within the first hour, justifying your drug choices, and state what would make you escalate or add coverage.",
+  "rubric": [
+   "Recognize this as high-risk febrile neutropenia with sepsis physiology (hypotension, raised lactate) requiring empiric broad-spectrum antibiotics within 60 minutes plus cultures (peripheral AND line lumens) before/with first dose",
+   "Choose an anti-pseudomonal beta-lactam as the backbone (e.g. piperacillin-tazobactam, cefepime, or meropenem) and justify covering Pseudomonas as mandatory in neutropenic sepsis",
+   "Interrogate the penicillin allergy label: a childhood non-severe rash does not preclude a cephalosporin/carbapenem given low cross-reactivity; avoid defaulting to inferior gram-negative cover; consider allergy delabelling but do not delay treatment",
+   "Address the perianal tenderness (possible perianal/perirectal source) and tunnelled line as a source \u2014 add anaerobic and consider gram-positive (line, mucositis, hypotension) cover; criteria for empiric vancomycin (line infection suspicion, hemodynamic instability, known MRSA/MRSA-risk, skin/soft-tissue)",
+   "Plan source control: assess line for removal indications (persistent bacteremia, tunnel infection, hemodynamic instability) and avoid digital rectal exam/enemas in neutropenia; involve surgery for perianal source if abscess",
+   "State escalation/de-escalation triggers: persistent fever/instability prompts antifungal consideration (e.g. echinocandin or mould-active azole) around day 4-7, add atypical/resistant gram-negative cover per local antibiogram and prior exposure, and reassess with culture results"
+  ],
+  "rule_category": "acute-emergency",
+  "specific_condition": "high-risk febrile neutropenia with septic shock",
+  "domain": "infectious disease & sepsis/antibiotics"
+ },
+ {
+  "id": "id-asymptomatic-bacteriuria-pregnancy-vs-elderly-testing",
+  "type": "test-decision",
+  "question": "You are reviewing two inpatients on the same morning. Patient A is an 82-year-old woman admitted after a mechanical fall, no fever, no dysuria, no delirium, normal vitals; a urine dipstick sent by the admitting team is positive for leukocyte esterase and nitrites. Patient B is a 27-year-old woman at 14 weeks gestation, asymptomatic, attending for routine antenatal review. For each patient, decide whether you would send a urine culture and whether you would treat any positive result, and justify the pros and cons of testing and treating in each case.",
+  "rubric": [
+   "Distinguish asymptomatic bacteriuria from urinary tract infection: a positive dipstick/culture without symptoms is colonization, not infection, in most adults",
+   "Patient A (elderly, no urinary symptoms, alternative explanation for presentation = fall): do not screen/treat asymptomatic bacteriuria; cite harms of unnecessary culture and antibiotics (C. difficile, resistance, adverse effects) and that bacteriuria does not explain a mechanical fall; caution against anchoring on the dipstick",
+   "Address the diagnostic trap of attributing nonspecific changes (or absence of delirium) to a 'UTI' in the elderly; treat only if genuine localizing symptoms or systemic signs of infection develop",
+   "Patient B (pregnancy): asymptomatic bacteriuria IS a screen-and-treat indication because of risk of pyelonephritis, preterm birth, and low birth weight \u2014 send a culture and treat a confirmed positive with a pregnancy-safe agent",
+   "Specify appropriate pregnancy-safe antibiotic selection guided by susceptibilities and trimester (e.g. avoid nitrofurantoin near term, avoid trimethoprim in first trimester / fluoroquinolones in pregnancy; consider cephalexin) and arrange test-of-cure",
+   "Note general stewardship principle: testing should be driven by whether the result will change management, and a positive test in an asymptomatic non-pregnant patient should not trigger antibiotics"
+  ],
+  "rule_category": "test-ordering",
+  "specific_condition": "asymptomatic bacteriuria (elderly vs pregnancy)",
+  "domain": "infectious disease & sepsis/antibiotics"
+ },
+ {
+  "id": "endo-emergency-myxedema-coma-multimorbid-elderly",
+  "type": "management",
+  "question": "An 82-year-old woman is brought to the ED in winter after being found unresponsive at home. She has known hypothyroidism but ran out of levothyroxine months ago. Temperature 32.1\u00b0C, HR 44, BP 88/56, RR 8, GCS 9. Sodium 119 mmol/L, glucose 3.0 mmol/L. ECG shows bradycardia with low-voltage QRS. She has a history of ischaemic heart disease and prior MI. TSH and cortisol are sent but results will take hours. The team wants to give a large IV loading dose of levothyroxine immediately and rapidly rewarm and correct the sodium. Outline how you would actually manage her in the first few hours and what you would do differently from the team's plan.",
+  "rubric": [
+   "Recognise this as myxedema coma and that empirical treatment must begin before lab confirmation; calculate/justify a thyroid hormone strategy that balances efficacy against cardiac risk (cautious IV levothyroxine, often with consideration of liothyronine, but reduced loading in established cardiac disease to avoid precipitating ischaemia/arrhythmia)",
+   "Give IV hydrocortisone (stress-dose) BEFORE or alongside thyroid hormone because of possible concurrent adrenal insufficiency (autoimmune polyglandular or central) \u2014 thyroid hormone alone can precipitate adrenal crisis",
+   "Correct hyponatraemia slowly (avoid >8-10 mmol/L/24h to prevent osmotic demyelination); the hyponatraemia is largely dilutional/SIADH-like and will partly correct with thyroid/cortisol replacement \u2014 do not give hypertonic saline reflexively unless seizing",
+   "Use passive/gradual rewarming rather than aggressive active rewarming (which causes vasodilatory shock in the volume-depleted, low-output state) and treat hypoglycaemia",
+   "Identify and treat the precipitant (sepsis/infection is the most common trigger \u2014 low threshold for cultures and empirical antibiotics despite normothermia masking infection) and address hypoventilation (low threshold for ventilatory support given hypercapnia risk)",
+   "Manage in a monitored/ICU setting, avoid sedatives/opioids that worsen CO2 retention, and frame the competing risks: under-treatment is fatal but over-rapid replacement risks fatal cardiac events in this patient"
+  ],
+  "rule_category": "comorbidity",
+  "specific_condition": "myxedema coma (severe decompensated hypothyroidism) in an elderly patient with ischaemic heart disease, hyponatraemia, and possible coexisting adrenal insufficiency",
+  "domain": "endocrine emergencies (NOT DKA)"
+ },
+ {
+  "id": "endo-emergency-phaeo-workup-incidentaloma-pretest-probability",
+  "type": "test-decision",
+  "question": "A 54-year-old man with longstanding essential hypertension (controlled on amlodipine and an SSRI for anxiety) has a 2.8 cm left adrenal incidentaloma found on a CT done for renal colic. The nodule is lipid-poor (28 Hounsfield units unenhanced). He has episodic palpitations and anxiety but no classic spells. His GP has already started a beta-blocker for the palpitations. The registrar wants to send plasma free metanephrines today to 'rule out a phaeochromocytoma' and, if mildly elevated, proceed straight to surgery. Critique this plan: what is the right testing approach, how should the result be interpreted, and what is unsafe here?",
+  "rubric": [
+   "Apply base-rate/pre-test-probability reasoning: phaeochromocytoma is rare among adrenal incidentalomas (~5%), so even a sensitive test (plasma free metanephrines) generates many false positives; a mildly elevated result in a low-pretest-probability patient is far more likely a false positive than disease, so going 'straight to surgery' on a borderline result is wrong",
+   "Optimise pre-analytical conditions to reduce false positives: supine sampling with age-adjusted reference ranges, and recognise that the SSRI and other interferents (and stress/illness) can falsely elevate catecholamine metabolites; tricyclics/SNRIs and certain drugs are classic confounders to review",
+   "Interpret magnitude: metanephrines >3-4x upper limit are highly suggestive, whereas borderline elevations require repeat testing and/or confirmatory work-up rather than action; consider clonidine suppression or repeat under optimised conditions for equivocal results",
+   "Identify the safety error: starting a beta-blocker (or testing/operating) without first excluding/treating phaeo risks unopposed alpha-stimulation and a hypertensive crisis \u2014 if phaeo is genuinely suspected, alpha-blockade must precede beta-blockade",
+   "Note the lipid-poor radiology (28 HU) does not specifically indicate phaeo (it argues against a benign lipid-rich adenoma and warrants biochemical work-up) and that biochemical exclusion of phaeo is mandatory before any biopsy or surgery of any adrenal mass",
+   "Recommend the full incidentaloma protocol beyond catecholamines: also screen for cortisol autonomy (overnight dexamethasone suppression) and, given hypertension, aldosterone:renin ratio \u2014 so a single 'rule out phaeo' test is an incomplete plan"
+  ],
+  "rule_category": "test-ordering",
+  "specific_condition": "phaeochromocytoma evaluation in an adrenal incidentaloma \u2014 plasma metanephrine interpretation, false-positive base rates, and the unopposed beta-blockade hazard",
+  "domain": "endocrine emergencies (NOT DKA)"
+ },
+ {
+  "id": "tox-lithium-chronic-vs-acute-ckd-hemodialysis",
+  "type": "management",
+  "question": "A 71-year-old woman with bipolar disorder (stable on lithium for 18 years), stage 3b chronic kidney disease (baseline eGFR ~38), heart failure with reduced ejection fraction on an ACE inhibitor and a thiazide, and recent gastroenteritis with 3 days of poor oral intake presents confused, ataxic, and tremulous. Serum lithium is 2.4 mmol/L, creatinine is up ~60% from baseline, and she is volume-depleted. The renal team is hesitant to dialyse because 'the level is only 2.4.' Walk through how you would assess severity and decide on management, including the role and timing of hemodialysis versus supportive care.",
+  "rubric": [
+   "Recognise this is CHRONIC (or acute-on-chronic) lithium toxicity, where neurotoxicity and dialysis indications depend on clinical features and kidney function, NOT the absolute level alone \u2014 a level of 2.4 in chronic toxicity is far more dangerous than the same level acutely",
+   "Identify the multiple synergistic mechanisms reducing lithium clearance: volume depletion, AKI on CKD, thiazide (increases proximal Na/Li reabsorption), ACE inhibitor, and reduced GFR \u2014 and that these must be corrected (hold lithium, hold thiazide/ACEi, IV isotonic saline to restore euvolaemia)",
+   "Apply explicit hemodialysis indications (e.g. EXTRIP-style): impaired kidney function with level >4.0, OR decreased consciousness/seizures/life-threatening dysrhythmia regardless of level, OR level >5.0; and weigh that significant neurotoxicity (confusion, ataxia) with impaired renal clearance favours dialysis here despite the 'only 2.4' level",
+   "Address the rebound phenomenon: lithium redistributes from intracellular compartment, so a single short HD session often causes rebound rise \u2014 plan for prolonged/repeat sessions or continuous renal replacement, and recheck levels 6-8h post-dialysis",
+   "Specify monitoring and supportive priorities: serial levels and neuro exam, ECG (consider arrhythmia/QT), avoid further nephrotoxins, cautious fluids given HFrEF (balance volume repletion against pulmonary oedema risk), and watch for SILENT (irreversible neurotoxicity)",
+   "Avoid the trap of using a fixed numeric level threshold to refuse dialysis; the decision integrates chronicity, end-organ neurotoxicity, comorbid renal/cardiac disease, and clearance trajectory"
+  ],
+  "rule_category": "comorbidity",
+  "specific_condition": "chronic lithium toxicity with acute-on-chronic kidney injury and heart failure",
+  "domain": "toxicology & overdose"
+ },
+ {
+  "id": "tox-occult-acetaminophen-coingestant-routine-screen-yield",
+  "type": "test-decision",
+  "question": "You run a busy emergency department. A registrar proposes a standing protocol: order a serum acetaminophen (paracetamol) level on EVERY patient who presents after any intentional self-poisoning or deliberate self-harm overdose, regardless of stated ingestant, because 'patients lie and acetaminophen is treatable.' A colleague objects that this is low-yield, costly, and generates false positives. Make the case for or against routine universal acetaminophen screening in deliberate self-poisoning, addressing base rates, test characteristics, and downstream consequences.",
+  "rubric": [
+   "Frame the core reasoning as base-rate / pre-test probability: occult (undisclosed) acetaminophen co-ingestion is genuinely common in deliberate self-poisoning (commonly cited single-digit to ~10%+ undisclosed positivity), and patient-reported ingestant is unreliable \u2014 so the pre-test probability is non-trivial even when acetaminophen is denied",
+   "Weigh the asymmetry of consequences: a missed acetaminophen ingestion is time-critical and silent early (normal exam for the first ~24h) but cheaply and effectively treatable with N-acetylcysteine if caught before hepatotoxicity \u2014 a high-cost miss against a low-cost test, which justifies broad screening despite modest yield",
+   "Address test timing/interpretation pitfalls: a level drawn too early (<4h post-ingestion) cannot be plotted on the nomogram, staggered/unknown-time ingestions break the nomogram, and a single level may need repeating \u2014 so 'order a level' must specify timing and repeat strategy, not just a one-off draw",
+   "Engage the false-positive / low-specificity concern honestly: low-level or assay-interference positives, and incidental therapeutic use, can trigger unnecessary NAC, anxiety, and prolonged stays \u2014 but quantify that NAC harm is modest relative to missed hepatotoxicity",
+   "Conclude with a defensible policy: routine acetaminophen (and typically salicylate) screening in deliberate self-poisoning is standard of care and the registrar is essentially right, but it must be paired with correct sampling time, nomogram literacy, and a plan for staggered ingestions \u2014 not a blanket reflex test devoid of interpretation",
+   "Avoid recommending the test purely as defensive medicine; the justification rests on quantified base rate \u00d7 consequence asymmetry \u00d7 cheap effective antidote, not on 'patients lie' alone"
+  ],
+  "rule_category": "test-ordering",
+  "specific_condition": "occult acetaminophen (paracetamol) co-ingestion in deliberate self-poisoning",
+  "domain": "toxicology & overdose"
+ },
+ {
+  "id": "haem-anticoag-afib-cirrhosis-thrombocytopenia",
+  "type": "management",
+  "question": "A 64-year-old man with newly diagnosed non-valvular atrial fibrillation (CHA2DS2-VASc 4: hypertension, diabetes, age, prior TIA) also has Child-Pugh B alcohol-related cirrhosis with portal hypertension, a platelet count of 62 x10^9/L, and an INR of 1.6 at baseline. He had one episode of melaena from oesophageal varices 8 months ago, now banded, and is on a non-selective beta-blocker. He asks whether he should be on a blood thinner for his irregular heartbeat. Outline how you would decide on, and if appropriate select, anticoagulation for this patient, and justify your reasoning.",
+  "rubric": [
+   "Recognise that the baseline INR is a marker of synthetic liver dysfunction, NOT therapeutic anticoagulation, and does not protect against thromboembolism (cirrhosis is a rebalanced/prothrombotic-and-prohaemorrhagic state, not 'auto-anticoagulated')",
+   "Acknowledge that standard stroke-risk (CHA2DS2-VASc) and bleeding-risk (e.g. HAS-BLED) scores are poorly validated/calibrated in cirrhosis and that thrombocytopenia plus prior variceal bleed substantially raise bleeding risk",
+   "Address that Child-Pugh B is a relative caution and Child-Pugh C a contraindication for DOACs; note apixaban is the least hepatically cleared/most studied DOAC and warfarin is hard to manage with a deranged baseline INR (INR target unreliable as INR is already elevated)",
+   "Emphasise that secondary variceal prophylaxis must be optimised first (band ligation programme +/- beta-blocker) before/alongside starting anticoagulation, as bleeding source modification changes the risk-benefit",
+   "Discuss a shared/individualised decision incorporating patient values, fall risk, alcohol use/ongoing harm, and the option of deferring or using left atrial appendage occlusion if bleeding risk is prohibitive",
+   "Avoid the trap of withholding anticoagulation purely on platelet count or baseline INR, and avoid antiplatelet 'as a safer substitute' (similar bleeding risk in cirrhosis, inferior stroke protection)"
+  ],
+  "rule_category": "comorbidity",
+  "specific_condition": "atrial fibrillation with cirrhosis, thrombocytopenia and prior variceal bleeding (anticoagulation decision)",
+  "domain": "haematology & anticoagulation"
+ },
+ {
+  "id": "haem-anticoag-unprovoked-vte-thrombophilia-testing",
+  "type": "test-decision",
+  "question": "A 38-year-old woman presents with a first unprovoked proximal DVT, now 3 weeks into therapeutic anticoagulation. She has no malignancy red flags and a normal age-appropriate cancer screen. Her sister had a DVT during pregnancy, and the patient asks to be 'tested for the clotting gene' to find out why this happened and whether her two teenage daughters are at risk. She is otherwise well and not pregnant. Should you order an inherited thrombophilia panel here? Explain the pros and cons and what you would do.",
+  "rubric": [
+   "Explain that for a first unprovoked VTE the decision about duration of anticoagulation (extended vs time-limited) is driven primarily by bleeding risk and recurrence estimation, and is generally NOT changed by inherited thrombophilia results",
+   "Address timing/assay-validity pitfalls: protein C/S and antithrombin levels are unreliable during acute thrombosis and on anticoagulation (warfarin lowers protein C/S; DOACs interfere with lupus anticoagulant and clot-based assays), so testing now risks false results",
+   "Distinguish inherited thrombophilia (low yield, rarely actionable here) from antiphospholipid syndrome testing, which CAN change management (e.g. avoid DOAC, favour warfarin) and may be justified in selected unprovoked VTE",
+   "Discuss the harms of testing: anxiety, insurance/genetic-discrimination implications, cascade testing of asymptomatic relatives who would not be anticoagulated prophylactically anyway, and potential for inappropriate lifelong labelling",
+   "Address the cascade-testing question directly: testing the asymptomatic daughters is generally not recommended as a positive result rarely warrants intervention and instead guides situational prophylaxis counselling (pregnancy, surgery, oestrogen use) that applies regardless",
+   "Provide a clear recommendation (defer/avoid routine inherited panel; consider antiphospholipid testing if clinically indicated and timed appropriately) with shared decision-making and counselling rather than reflexive ordering"
+  ],
+  "rule_category": "test-ordering",
+  "specific_condition": "first unprovoked VTE \u2014 inherited thrombophilia / antiphospholipid testing decision",
+  "domain": "haematology & anticoagulation"
+ }
+]
