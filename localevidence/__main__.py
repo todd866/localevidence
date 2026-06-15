@@ -98,6 +98,7 @@ def main(argv=None) -> int:
     sy.add_argument("-k", "--passages", type=int, default=8, help="Passages to ground in")
     sy.add_argument("--harness", action="store_true", help="Full multi-stage harness (expand->draft->critique->revise->verify), not one-shot")
     sy.add_argument("--safe", action="store_true", help="Defence-in-depth: triage->inject safety rules->reason->safety-critic->abstain on unresolved critical risk")
+    sy.add_argument("--gated", action="store_true", help="Capability gate: synthesise only if the task class is within the model's competence tier (LOCALEVIDENCE_MODEL_TIER); else refuse + return evidence")
     sy.add_argument("--show-grounding", action="store_true", help="Print the grounding report (harness mode)")
 
     el = sub.add_parser("eval-local", help="Long-form eval: run the grounded harness over many questions on-device and score grounding (+ rubric completeness)")
@@ -230,6 +231,22 @@ def main(argv=None) -> int:
         idx = PassageIndex()
         retrieve = lambda query, k: [_passage_view(p) for p in idx.search(query, k=k)]
         try:
+            if args.gated:
+                from .capability import gated_answer
+                out = gated_answer(q, retrieve=retrieve, model=args.model, k=args.passages)
+                if out["disposition"] == "answered":
+                    print(out["answer"])
+                    print(f"\n— gate: {out['tier']} tier / {out['task_class']} → answered",
+                          file=sys.stderr)
+                else:
+                    print(out["refusal"])
+                    print("\nRetrieved evidence (reason from these yourself / escalate):")
+                    for p in out["passages"][:args.passages]:
+                        print(f"  [{p['id']}] {(p.get('paper') or p.get('title') or '')[:70]} "
+                              f"({p.get('doi') or 'no-doi'})")
+                    print(f"\n— gate: {out['tier']} tier / {out['task_class']} → REFUSED synthesis",
+                          file=sys.stderr)
+                return 0
             if args.safe:
                 from .harness import reasoning_answer
                 from .safety import guarded_answer
