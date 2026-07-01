@@ -56,6 +56,26 @@ class GuidelineSourceRegistryTest(unittest.TestCase):
         self.assertTrue(any(p.count("/") == 1 for p in seeds.values()))  # top-level ones too
 
 
+class SkipPrefixTest(unittest.TestCase):
+    def test_ascia_registered_with_source_tag(self):
+        from localevidence.guidelines import SOURCES
+        self.assertEqual(SOURCES["ascia"]["source"], "guideline:ascia")
+        self.assertEqual(SOURCES["ascia"]["slug_prefix"], "ascia-")
+
+    def test_skip_prefixes_drops_bibliography_pages(self):
+        from localevidence.guidelines import crawl_index, SOURCES
+        # ASCIA's /hp/papers/ index mixes real guidelines with references-* and
+        # id-register-* pages; skip_prefixes must drop the latter, keep the former.
+        html = ('<a href="/hp/papers/ascia-penicillin-allergy-guide">Penicillin</a>'
+                '<a href="/hp/papers/references-crswnp-a-l">refs</a>'
+                '<a href="/hp/papers/id-register-access-film">film</a>')
+        out = crawl_index(_session(html), SOURCES["ascia"])
+        names = {n for n, _, _ in out}
+        self.assertIn("ascia-penicillin-allergy-guide", names)
+        self.assertNotIn("references-crswnp-a-l", names)
+        self.assertNotIn("id-register-access-film", names)
+
+
 class PdfHarvestTest(unittest.TestCase):
     """_fetch_text routes PDF vs HTML so PDF-only sources (RANZCOG etc.) harvest."""
 

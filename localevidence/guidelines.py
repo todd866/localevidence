@@ -100,6 +100,15 @@ SOURCES: dict[str, dict] = {
             ("covid-19", "/covid-19"),
         ],
     },
+    "ascia": {  # ASCIA — allergy/immunology guidelines & position papers (anaphylaxis, food/drug allergy)
+        "source": "guideline:ascia",
+        "journal": "ASCIA Guidelines & Position Papers",
+        "index_url": "https://www.allergy.org.au/hp/papers",
+        "base": "https://www.allergy.org.au", "slug_prefix": "ascia-",
+        "link_re": r"href=['\"](/hp/papers/([a-z0-9][a-z0-9-]+))['\"]",
+        "skip": set(),
+        "skip_prefixes": ("references-", "id-register"),  # bibliography/registration pages, not guidelines
+    },
     "ranzcog": {  # RANZCOG Statements & Guidelines — obstetric/gynae (PDF documents)
         "source": "guideline:ranzcog",
         "journal": "RANZCOG Statements & Guidelines",
@@ -125,7 +134,8 @@ def crawl_index(session: requests.Session, cfg: dict) -> list[tuple[str, str, st
         path, name = g[0], g[1]
         title = (_html.unescape(g[2]).strip() if len(g) > 2 and g[2]
                  else name.replace("-", " ").title())
-        if name in cfg.get("skip", set()) or name in seen:
+        if (name in cfg.get("skip", set()) or name.startswith(cfg.get("skip_prefixes", ()))
+                or name in seen):
             continue
         seen.add(name)
         url = path if path.startswith(("http://", "https://")) else cfg["base"] + path
