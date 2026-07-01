@@ -89,5 +89,35 @@ class PdfHarvestTest(unittest.TestCase):
         self.assertIn(r"\.pdf", SOURCES["ranzcog"]["link_re"])  # captures PDF links
 
 
+class ImpersonateSessionTest(unittest.TestCase):
+    """_make_session opts a source into curl-impersonate (for TLS-fingerprint
+    bot-protected sites) when it's installed, and degrades safely when it isn't."""
+
+    def test_normal_source_uses_plain_requests(self):
+        import requests
+        from localevidence.guidelines import _make_session
+        self.assertIsInstance(_make_session({}), requests.Session)
+
+    def test_impersonate_falls_back_to_requests_when_curl_cffi_absent(self):
+        import requests
+        from localevidence.guidelines import _make_session
+        # curl_cffi isn't a hard dep; absence must degrade, not crash.
+        s = _make_session({"impersonate": "chrome"})
+        self.assertIsInstance(s, requests.Session)
+
+    def test_impersonate_uses_curl_cffi_when_present(self):
+        import sys
+        from localevidence.guidelines import _make_session
+        fake_sess = object()
+        fake_creq = mock.Mock()
+        fake_creq.Session = mock.Mock(return_value=fake_sess)
+        fake_mod = mock.Mock(requests=fake_creq)
+        with mock.patch.dict(sys.modules, {"curl_cffi": fake_mod,
+                                           "curl_cffi.requests": fake_creq}):
+            out = _make_session({"impersonate": "chrome"})
+        self.assertIs(out, fake_sess)
+        fake_creq.Session.assert_called_once()
+
+
 if __name__ == "__main__":
     unittest.main()

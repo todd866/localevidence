@@ -164,6 +164,23 @@ def _fetch_text(session: requests.Session, url: str) -> str:
     return _clean_html(r.text)
 
 
+def _make_session(cfg: dict):
+    """Fetch session for a source. Sources behind TLS-fingerprint bot protection
+    (a plain-requests 403 — e.g. some state-health sites) set impersonate='chrome'
+    etc.; we use curl_cffi (curl-impersonate) when installed, else fall back to
+    requests (which will likely still 403 — install curl_cffi to reach them)."""
+    imp = cfg.get("impersonate")
+    if imp:
+        try:
+            from curl_cffi import requests as _creq
+            return _creq.Session(impersonate=imp, headers=_UA)
+        except ImportError:
+            pass  # curl_cffi not installed — degrade to plain requests
+    s = requests.Session()
+    s.headers.update(_UA)
+    return s
+
+
 def _store_text(slug: str, title: str, text: str, *, source: str,
                 journal: str, url: str = "") -> None:
     """Catalogue a web guideline into the library (text file + catalog row)."""
@@ -179,8 +196,7 @@ def harvest(source: str = "rch", *, limit: int = 0, pace_s: float = 0.7,
     """Crawl + fetch + catalogue a guideline source (see SOURCES). Idempotent
     (skips slugs already held for that source unless refresh). Returns a summary."""
     cfg = SOURCES[source]
-    s = requests.Session()
-    s.headers.update(_UA)
+    s = _make_session(cfg)  # curl-impersonate for bot-protected sources, else requests
     guidelines = crawl_index(s, cfg)
     # Curated seed pages the index/sitemap misses (orphan pages at odd paths).
     for name, path in cfg.get("seeds", []):
