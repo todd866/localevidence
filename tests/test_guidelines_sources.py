@@ -44,6 +44,17 @@ class GuidelineSourceRegistryTest(unittest.TestCase):
         self.assertEqual(SOURCES["aih"]["source"], "guideline:aih")
         self.assertEqual(SOURCES["aih"]["slug_prefix"], "aih-")
 
+    def test_aih_seeds_cover_orphan_childhood_diseases(self):
+        # measles/pertussis/etc. exist but aren't linked from the index or
+        # sitemap, so they must be harvested via the curated seed-list.
+        from localevidence.guidelines import SOURCES
+        seeds = dict(SOURCES["aih"].get("seeds", []))
+        self.assertIn("measles", seeds)
+        self.assertTrue(any("pertussis" in name for name in seeds))
+        # seeds carry a full path (paths are inconsistent across AIH)
+        self.assertTrue(seeds["measles"].startswith("/contents/"))
+        self.assertTrue(any(p.count("/") == 1 for p in seeds.values()))  # top-level ones too
+
 
 if __name__ == "__main__":
     unittest.main()

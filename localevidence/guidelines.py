@@ -87,6 +87,18 @@ SOURCES: dict[str, dict] = {
         "base": "https://immunisationhandbook.health.gov.au", "slug_prefix": "aih-",
         "link_re": r"href=['\"](/contents/vaccine-preventable-diseases/([a-z0-9][a-z0-9-]+))['\"]",
         "skip": set(),
+        # High-value childhood-schedule diseases the AIH index/sitemap does NOT
+        # link (orphan pages, at inconsistent paths — verified 200). `seeds` are
+        # fetched directly alongside the crawled index (name, full-path-from-base).
+        "seeds": [
+            ("measles", "/contents/vaccine-preventable-diseases/measles"),
+            ("diphtheria", "/contents/vaccine-preventable-diseases/diphtheria"),
+            ("pertussis-whooping-cough", "/pertussis-whooping-cough"),
+            ("meningococcal-disease", "/meningococcal-disease"),
+            ("pneumococcal-disease", "/pneumococcal-disease"),
+            ("influenza-flu", "/influenza-flu"),
+            ("covid-19", "/covid-19"),
+        ],
     },
 }
 
@@ -134,6 +146,11 @@ def harvest(source: str = "rch", *, limit: int = 0, pace_s: float = 0.7,
     s = requests.Session()
     s.headers.update(_UA)
     guidelines = crawl_index(s, cfg)
+    # Curated seed pages the index/sitemap misses (orphan pages at odd paths).
+    for name, path in cfg.get("seeds", []):
+        guidelines.append((name, name.replace("-", " ").title(), cfg["base"] + path))
+    _seen: set[str] = set()  # dedupe by name (index and seeds can overlap)
+    guidelines = [g for g in guidelines if not (g[0] in _seen or _seen.add(g[0]))]
     if verbose:
         print(f"  {source} index: {len(guidelines)} guidelines")
     if limit:
