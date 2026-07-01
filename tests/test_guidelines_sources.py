@@ -56,5 +56,38 @@ class GuidelineSourceRegistryTest(unittest.TestCase):
         self.assertTrue(any(p.count("/") == 1 for p in seeds.values()))  # top-level ones too
 
 
+class PdfHarvestTest(unittest.TestCase):
+    """_fetch_text routes PDF vs HTML so PDF-only sources (RANZCOG etc.) harvest."""
+
+    def _resp(self, *, content, ctype, text=""):
+        r = mock.Mock(); r.status_code = 200
+        r.headers = {"Content-Type": ctype}; r.content = content; r.text = text
+        s = mock.Mock(); s.get = mock.Mock(return_value=r)
+        return s
+
+    def test_pdf_magic_bytes_route_to_pdf_extractor(self):
+        from localevidence import guidelines
+        sess = self._resp(content=b"%PDF-1.5 ...", ctype="application/octet-stream")
+        with mock.patch.object(guidelines, "_extract_pdf", return_value="PDFTEXT") as ep:
+            out = guidelines._fetch_text(sess, "https://x/statement")  # no .pdf ext, octet-stream
+        ep.assert_called_once()
+        self.assertEqual(out, "PDFTEXT")
+
+    def test_html_content_type_routes_to_html_cleaner(self):
+        from localevidence import guidelines
+        sess = self._resp(content=b"<html>", ctype="text/html",
+                          text="<main>" + ("word " * 300) + "</main>")
+        with mock.patch.object(guidelines, "_extract_pdf") as ep:
+            out = guidelines._fetch_text(sess, "https://x/page")
+        ep.assert_not_called()
+        self.assertIn("word", out)
+
+    def test_ranzcog_registered_as_pdf_source(self):
+        from localevidence.guidelines import SOURCES
+        self.assertIn("ranzcog", SOURCES)
+        self.assertEqual(SOURCES["ranzcog"]["source"], "guideline:ranzcog")
+        self.assertIn(r"\.pdf", SOURCES["ranzcog"]["link_re"])  # captures PDF links
+
+
 if __name__ == "__main__":
     unittest.main()

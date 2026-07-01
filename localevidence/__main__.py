@@ -46,7 +46,7 @@ def main(argv=None) -> int:
     srv.add_argument("--host", default="127.0.0.1", help="Bind address (default localhost; use 0.0.0.0 only behind a private network)")
 
     gl = sub.add_parser("guidelines", help="Harvest web-published clinical guidelines into the local library")
-    gl.add_argument("--source", default="rch", choices=["rch", "aih"],
+    gl.add_argument("--source", default="rch", choices=["rch", "aih", "ranzcog"],
                     help="Guideline source to harvest (see guidelines.SOURCES)")
     gl.add_argument("--limit", type=int, default=0, help="Harvest at most N guidelines")
     gl.add_argument("--pace", type=float, default=0.7, help="Seconds between fetches")

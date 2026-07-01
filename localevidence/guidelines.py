@@ -100,6 +100,15 @@ SOURCES: dict[str, dict] = {
             ("covid-19", "/covid-19"),
         ],
     },
+    "ranzcog": {  # RANZCOG Statements & Guidelines — obstetric/gynae (PDF documents)
+        "source": "guideline:ranzcog",
+        "journal": "RANZCOG Statements & Guidelines",
+        "index_url": "https://ranzcog.edu.au/womens-health/statements-guidelines/",
+        "base": "https://ranzcog.edu.au", "slug_prefix": "ranzcog-",
+        # statements are PDFs (full URLs on the index); capture (url, filename).
+        "link_re": r"href=['\"](https?://ranzcog\.edu\.au/[^'\"]*?/([^/'\"]+)\.pdf)['\"]",
+        "skip": set(),
+    },
 }
 
 
@@ -119,13 +128,40 @@ def crawl_index(session: requests.Session, cfg: dict) -> list[tuple[str, str, st
         if name in cfg.get("skip", set()) or name in seen:
             continue
         seen.add(name)
-        out.append((name, title, cfg["base"] + path))
+        url = path if path.startswith(("http://", "https://")) else cfg["base"] + path
+        out.append((name, title, url))
     return out
 
 
 def crawl_rch_index(session: requests.Session) -> list[tuple[str, str, str]]:
     """Back-compat alias — RCH via the generic crawler."""
     return crawl_index(session, SOURCES["rch"])
+
+
+def _extract_pdf(data: bytes) -> str:
+    """Extract readable text from a PDF (many guideline statements — RANZCOG etc.
+    — are PDFs, not HTML). Lazy pypdf import so HTML-only sources don't need it."""
+    try:
+        import io
+        from pypdf import PdfReader
+        reader = PdfReader(io.BytesIO(data))
+        text = "\n".join((p.extract_text() or "") for p in reader.pages)
+    except Exception:
+        return ""
+    text = re.sub(r"[ \t]+", " ", text)
+    return re.sub(r"\n{2,}", "\n", text).strip()
+
+
+def _fetch_text(session: requests.Session, url: str) -> str:
+    """Fetch a guideline URL → readable body text, HTML or PDF (by content-type,
+    .pdf extension, or the %PDF- magic). Returns '' on non-200 or empty extract."""
+    r = session.get(url, timeout=45)
+    if r.status_code != 200:
+        return ""
+    ctype = (r.headers.get("Content-Type") or "").lower()
+    if "pdf" in ctype or url.lower().split("?")[0].endswith(".pdf") or r.content[:5] == b"%PDF-":
+        return _extract_pdf(r.content)
+    return _clean_html(r.text)
 
 
 def _store_text(slug: str, title: str, text: str, *, source: str,
@@ -172,11 +208,10 @@ def harvest(source: str = "rch", *, limit: int = 0, pace_s: float = 0.7,
             skipped += 1
             continue
         try:
-            r = s.get(url, timeout=30)
-            if r.status_code != 200:
+            text = _fetch_text(s, url)  # HTML or PDF
+            if not text:
                 failed += 1
                 continue
-            text = _clean_html(r.text)
             if len(text) < min_chars:
                 thin += 1
                 continue
